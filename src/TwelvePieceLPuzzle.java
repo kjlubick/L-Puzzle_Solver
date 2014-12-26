@@ -44,14 +44,30 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     }
 
     @Override
-    public void addTetrinomo(Tetromino t, Rotation rotation, int pegX, int pegY) {
+    public boolean addTetrinomo(Tetromino t, Rotation rotation, int pegX, int pegY) {
+        if (puzzle[pegY][pegX] != PuzzleElement.PEG) {
+            return false;
+        }
         tetrominos[pegY][pegX] = t;
         
         int[][] calc = calculateRotation(rotation, t.yOffsets, t.xOffsets);
         
         for(int i =0;i<calc.length; i++) {
-            tetrominos[pegY + calc[i][1]][pegX + calc[i][0]] = t;
+            int x = pegX + calc[i][0];
+            int y = pegY + calc[i][1];
+            
+            if (tetrominos[y][x] == null) {
+                tetrominos[y][x] = t;
+            } else {
+                //undo previous tetromino pieces
+                for(int j = i-1; j>=0 ;j --) {
+                    tetrominos[y][x] = null;
+                }
+                return false;
+            }
+            
         }
+        return true;
         
     }
 
@@ -60,8 +76,8 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         for (int i = 0; i < xOffsets.length; i++) {
             int xOff = xOffsets[i];
             int yOff = yOffsets[i];
-            int rotX = r.rotMatrix[0][0] * xOff + r.rotMatrix[1][0] * xOff;
-            int rotY = r.rotMatrix[0][1] * yOff + r.rotMatrix[1][1] * yOff;
+            int rotX = r.rotMatrix[0][0] * xOff + r.rotMatrix[1][0] * yOff;
+            int rotY = r.rotMatrix[0][1] * xOff + r.rotMatrix[1][1] * yOff;
 
             retVal[i][0] = rotX;
             retVal[i][1] = rotY;

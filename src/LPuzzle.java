@@ -26,15 +26,15 @@ public abstract class LPuzzle {
     public enum Rotation {
         None(new int[][]{{1,0},{0,1}}), 
         Ninety(new int[][]{{0,-1},{1,0}}), 
-        OneEighty, TwoSeventy, MirrorNone, MirrorNinety,
-        MirrorOneEighty, MirrorTwoSeventy;
+        OneEighty(new int[][]{{-1,0},{0,-1}}), 
+        TwoSeventy(new int[][]{{0,1},{-1,0}}), 
+        MirrorNone(new int[][]{{-1,0},{0,1}}), 
+        MirrorNinety(new int[][]{{0,-1},{-1,0}}),
+        MirrorOneEighty(new int[][]{{1,0},{0,-1}}), 
+        MirrorTwoSeventy(new int[][]{{0,1},{-1,0}});
         
         private Rotation(int[][] rotMatrix) {
             this.rotMatrix = rotMatrix;
-        }
-        
-        private Rotation() {
-            
         }
         
         int[][] rotMatrix;
@@ -59,6 +59,7 @@ public abstract class LPuzzle {
         }
     }
 
-    public abstract void addTetrinomo(Tetromino t, Rotation rotation, int pegX, int pegY);
+    //return true if it was successful, false otherwise
+    public abstract boolean addTetrinomo(Tetromino t, Rotation rotation, int pegX, int pegY);
 
 }
