@@ -49,6 +49,7 @@ public abstract class LPuzzle {
     public abstract Tetromino getTetromino(int x, int y);
     
     public void print() {
+        System.out.println();
         for (int y = 0; y < getHeight(); y++) {
             for (int x = 0; x < getWidth(); x++) {
                 Tetromino t = getTetromino(x, y);

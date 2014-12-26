@@ -54,6 +54,28 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         }  
     }
 
+    public static LPuzzle random() {
+        TwelvePieceLPuzzle random = null;
+        System.out.println("Generating random puzzle");
+        Random rand = new Random();
+        Set<Point> pegs = new HashSet<Point>(12);
+        long i = 0;
+        do {
+            if (i % 100 == 0)
+                System.out.print(".");
+            pegs.clear();
+            while (pegs.size() < 12) {
+                pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
+            }
+    
+            random = new TwelvePieceLPuzzle(pegs);
+            i++;
+        } while (!random.solve());
+        random.clearTetrinomos();
+        System.out.println("Tried "+i+" bad puzzles");
+        return random;
+    }
+
     @Override
     public int getWidth() {
         return WIDTH;
@@ -90,7 +112,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     @Override
     public boolean addTetrinomo(Tetromino t, Rotation rotation, int pegX, int pegY) {
         // Phase 1: test if it fits
-        if (puzzle[pegY][pegX] != PuzzleElement.PEG) {
+        if (puzzle[pegY][pegX] != PuzzleElement.PEG || !isNoTouchingPieces(pegX, pegY, t)) {
             return false;
         }
         int[][] calc = calculateRotation(rotation, t.yOffsets, t.xOffsets);
@@ -320,28 +342,6 @@ public class TwelvePieceLPuzzle extends LPuzzle {
                 return false;
             return true;
         }        
-    }
-
-    public static LPuzzle random() {
-        TwelvePieceLPuzzle random = null;
-        System.out.println("Generating random puzzle");
-        Random rand = new Random();
-        Set<Point> pegs = new HashSet<Point>(12);
-        long i = 0;
-        do {
-            if (i % 100 == 0)
-                System.out.print(".");
-            pegs.clear();
-            while (pegs.size() < 12) {
-                pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
-            }
-
-            random = new TwelvePieceLPuzzle(pegs);
-            i++;
-        } while (!random.solve());
-        random.clearTetrinomos();
-        System.out.println("Tried "+i+" bad puzzles");
-        return random;
     }
     
 
