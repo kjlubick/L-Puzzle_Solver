@@ -114,11 +114,11 @@ public class TwelvePieceLPuzzle extends LPuzzle {
                 y < getHeight() && y >= 0;
     }
 
-    private void removeTetrinomo(Tetromino t, Rotation r, Point peg) {
+    public void removeTetrinomo(Tetromino t, Rotation r, Point peg) {
         removeTetrinomo(t, r, peg.x, peg.y);
     }
 
-    private void removeTetrinomo(Tetromino t, Rotation r, int pegX, int pegY) {
+    public void removeTetrinomo(Tetromino t, Rotation r, int pegX, int pegY) {
         if (puzzle[pegY][pegX] != PuzzleElement.PEG) {
             return;
         }
@@ -158,57 +158,11 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         }
     }
 
-    private class TetriRotation {
-        public final Rotation rotation;
-        public final Tetromino tetromino;
-        public TetriRotation(Rotation rotation, Tetromino tetromino) {
-            this.rotation = rotation;
-            this.tetromino = tetromino;
-        }
-        @Override
-        public String toString() {
-            return "TetriRotation [rotation=" + rotation + ", tetromino=" + tetromino + "]";
-        }
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + getOuterType().hashCode();
-            result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
-            result = prime * result + ((tetromino == null) ? 0 : tetromino.hashCode());
-            return result;
-        }
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            TetriRotation other = (TetriRotation) obj;
-            if (!getOuterType().equals(other.getOuterType()))
-                return false;
-            if (rotation != other.rotation)
-                return false;
-            if (tetromino != other.tetromino)
-                return false;
-            return true;
-        }
-        private TwelvePieceLPuzzle getOuterType() {
-            return TwelvePieceLPuzzle.this;
-        } 
-        
-    }
-    
     @Override
     public boolean solve() {
         clearTetrinomos();
 
-        List<List<TetriRotation>> treeOfSolutions = new ArrayList<List<TetriRotation>>();
-        List<Integer> treeOfSolutionsIndex = new ArrayList<Integer>();
-
-        if (solve(treeOfSolutions, treeOfSolutionsIndex, new ArrayList<Point>(pegs))) {
+        if (solve(new ArrayList<Point>(pegs))) {
             System.out.println("Solved");
             this.print();
             // todo, interpret treeOfSolutions
@@ -219,6 +173,45 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             clearTetrinomos();
             return false;
         }
+    }
+
+    private boolean solve(List<Point> pegsLeftToLocate) {
+        if (pegsLeftToLocate.size() == 0) { //no more pegs to play, we can only have solved the puzzle
+            return true;
+        }
+        
+        Map<Point, List<TetriRotation>> rotations = findPossibilitiesForPegs(pegsLeftToLocate);
+        
+        Point pegToTry = null;
+        List<TetriRotation> trListToTry = null;
+        int smallestRotations = Integer.MAX_VALUE;
+        for (Entry<Point, List<TetriRotation>> entry : rotations.entrySet()) {
+            List<TetriRotation> list = entry.getValue();
+            if (smallestRotations > list.size()) {
+                smallestRotations = list.size();
+                trListToTry = list;
+                pegToTry = entry.getKey();
+            }
+        }
+        if (smallestRotations == 0) { // there is a peg that can't be fit
+            return false;
+        }
+        
+        pegsLeftToLocate.remove(pegToTry);
+        
+        for (int i = 0; i < trListToTry.size(); i++) {
+            TetriRotation tr = trListToTry.get(i);
+            if (addTetrinomo(tr.tetromino, tr.rotation, pegToTry)) {
+                if (solve(new ArrayList<Point>(pegsLeftToLocate))) {  //copy the pegs, so they aren't interfered with
+                    return true;
+                }
+                removeTetrinomo(tr.tetromino, tr.rotation, pegToTry);
+            }
+        }
+        
+        // I've tried this peg in all configurations and gotten nothing, no solution down this line
+        
+        return false;
     }
 
     private Map<Point, List<TetriRotation>> findPossibilitiesForPegs(List<Point> pegsToTest) {
@@ -239,57 +232,48 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         return originalRotations;
     }
 
-    private boolean solve(List<List<TetriRotation>> treeOfSolutions, List<Integer> treeOfSolutionsIndex, List<Point> pegsLeftToLocate) {
-        if (pegsLeftToLocate.size() == 0) {
-            return true;
-        }
-        
-        Map<Point, List<TetriRotation>> rotations = findPossibilitiesForPegs(pegsLeftToLocate);
-        
-       // printRotations(rotations);
-        
-        Point pegToTry = null;
-        List<TetriRotation> trListToTry = null;
-        int smallestRotations = Integer.MAX_VALUE;
-        for (Entry<Point, List<TetriRotation>> entry : rotations.entrySet()) {
-            List<TetriRotation> list = entry.getValue();
-            if (smallestRotations > list.size()) {
-                smallestRotations = list.size();
-                trListToTry = list;
-                pegToTry = entry.getKey();
-            }
-        }
-        if (smallestRotations == 0) { // there is a peg that can't be fit
-            return false;
-        }
-        
-        pegsLeftToLocate.remove(pegToTry);
-        treeOfSolutions.add(trListToTry);
-        treeOfSolutionsIndex.add(0);
-        
-        for (int i = 0; i < trListToTry.size(); i++) {
-            TetriRotation tr = trListToTry.get(i);
-            treeOfSolutionsIndex.set(treeOfSolutionsIndex.size() - 1, i);
-            if (addTetrinomo(tr.tetromino, tr.rotation, pegToTry)) {
-               // this.print();
-                if (solve(treeOfSolutions, treeOfSolutionsIndex,
-                        new ArrayList<Point>(pegsLeftToLocate))) {  //copy the pegs
-                    return true;
-                }
-                removeTetrinomo(tr.tetromino, tr.rotation, pegToTry);
-            }
-        }
-        
-        // I've tried this peg in all configurations and gotten nothing, no solution down this line
-        
-        return false;
-    }
-
-    private void printRotations(Map<Point, List<TetriRotation>> rotations) {
+    @SuppressWarnings("unused")
+    private void debugPrintRotations(Map<Point, List<TetriRotation>> rotations) {
         for(Entry<Point, List<TetriRotation>> entry: rotations.entrySet()) {
             int n = entry.getValue().size();
             System.out.printf("%s = %d %s%n", entry.getKey(), n, entry.getValue());
         }
+    }
+
+    private static class TetriRotation {
+        public final Rotation rotation;
+        public final Tetromino tetromino;
+        public TetriRotation(Rotation rotation, Tetromino tetromino) {
+            this.rotation = rotation;
+            this.tetromino = tetromino;
+        }
+        @Override
+        public String toString() {
+            return "TetriRotation [rotation=" + rotation + ", tetromino=" + tetromino + "]";
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
+            result = prime * result + ((tetromino == null) ? 0 : tetromino.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TetriRotation other = (TetriRotation) obj;
+            if (rotation != other.rotation)
+                return false;
+            if (tetromino != other.tetromino)
+                return false;
+            return true;
+        }        
     }
     
 
