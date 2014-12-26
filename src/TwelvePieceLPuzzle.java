@@ -61,8 +61,11 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             } else {
                 //undo previous tetromino pieces
                 for(int j = i-1; j>=0 ;j --) {
+                    x = pegX + calc[j][0];
+                    y = pegY + calc[j][1];
                     tetrominos[y][x] = null;
                 }
+                tetrominos[pegY][pegX] = null;
                 return false;
             }
             

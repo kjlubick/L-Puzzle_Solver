@@ -31,7 +31,7 @@ public abstract class LPuzzle {
         MirrorNone(new int[][]{{-1,0},{0,1}}), 
         MirrorNinety(new int[][]{{0,-1},{-1,0}}),
         MirrorOneEighty(new int[][]{{1,0},{0,-1}}), 
-        MirrorTwoSeventy(new int[][]{{0,1},{-1,0}});
+        MirrorTwoSeventy(new int[][]{{0,1},{1,0}});
         
         private Rotation(int[][] rotMatrix) {
             this.rotMatrix = rotMatrix;
