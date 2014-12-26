@@ -100,7 +100,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         if (puzzle[pegY][pegX] != PuzzleElement.PEG) {
             return;
         }
-        tetrominos[pegY][pegX] = t;
+        tetrominos[pegY][pegX] = null;
         
         int[][] calc = calculateRotation(r, t.yOffsets, t.xOffsets);
         
@@ -109,19 +109,9 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             int y = pegY + calc[i][1];
             
             if (x < getWidth() && x >= 0 &&
-                    y < getHeight() && y >= 0 && 
-                    tetrominos[y][x] == null && puzzle[y][x] == PuzzleElement.BLANK) {
-                tetrominos[y][x] = t;
-            } else {
-                //undo previous tetromino pieces
-                for(int j = i-1; j>=0 ;j --) {
-                    x = pegX + calc[j][0];
-                    y = pegY + calc[j][1];
-                    tetrominos[y][x] = null;
-                }
-                tetrominos[pegY][pegX] = null;
-                return;
-            }   
+                    y < getHeight() && y >= 0) {
+                tetrominos[y][x] = null;
+            } 
         }        
     }
 
@@ -193,54 +183,27 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     @Override
     public void solve() {
         clearTetrinomos();
-//        Map<Point, List<TetriRotation>> originalRotations = findPossibilitiesForPegs(pegs);
-//        
-        
-        
+
         List<List<TetriRotation>> treeOfSolutions = new ArrayList<List<TetriRotation>>();
         List<Integer> treeOfSolutionsIndex = new ArrayList<Integer>();
-        
+
         if (solve(treeOfSolutions, treeOfSolutionsIndex, new ArrayList<Point>(pegs))) {
+            System.out.println("Solved");
+            this.print();
             List<TetriRotation> solution = new ArrayList<>();
-            
-            int index =0;
-            for(List<TetriRotation> list : treeOfSolutions) {
+
+            int index = 0;
+            for (List<TetriRotation> list : treeOfSolutions) {
                 solution.add(list.get(treeOfSolutionsIndex.get(index)));
                 index++;
             }
-            
+
             System.out.println(solution);
-            
+
         } else {
             System.out.println("No Solution");
             clearTetrinomos();
         }
-        
-        
-        
-//        
-//        
-//        
-//        Map<Point, List<TetriRotation>> rotations = originalRotations;
-//
-//        while (true) {
-//            List<TetriRotation> trToTry = null;
-//            int smallestRotations = Integer.MAX_VALUE;
-//            for (Entry<Point, List<TetriRotation>> entry : rotations.entrySet()) {
-//                List<TetriRotation> list = entry.getValue();
-//                if (smallestRotations > list.size()) {
-//                    smallestRotations = list.size();
-//                    trToTry = list;
-//                }
-//            }
-//            if (smallestRotations == 0) { // there is a peg that can't be fit
-//                // bail
-//            }
-//
-//            treeOfSolutions.add(trToTry);
-//            treeOfSolutionsIndex.add(0);
-
-        
     }
 
     private Map<Point, List<TetriRotation>> findPossibilitiesForPegs(List<Point> pegsToTest) {
@@ -262,7 +225,13 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     }
 
     private boolean solve(List<List<TetriRotation>> treeOfSolutions, List<Integer> treeOfSolutionsIndex, List<Point> pegsLeftToLocate) {
+        if (pegsLeftToLocate.size() == 0) {
+            return true;
+        }
+        
         Map<Point, List<TetriRotation>> rotations = findPossibilitiesForPegs(pegsLeftToLocate);
+        
+       // printRotations(rotations);
         
         Point pegToTry = null;
         List<TetriRotation> trListToTry = null;
@@ -279,6 +248,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             return false;
         }
         
+        pegsLeftToLocate.remove(pegToTry);
         treeOfSolutions.add(trListToTry);
         treeOfSolutionsIndex.add(0);
         
@@ -286,7 +256,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             TetriRotation tr = trListToTry.get(i);
             treeOfSolutionsIndex.set(treeOfSolutionsIndex.size() - 1, i);
             if (addTetrinomo(tr.tetromino, tr.rotation, pegToTry)) {
-                pegsLeftToLocate.remove(pegToTry);
+               // this.print();
                 if (solve(treeOfSolutions, treeOfSolutionsIndex, pegsLeftToLocate)) { 
                     return true;
                 }
@@ -297,6 +267,13 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         // I've tried this peg in all configurations and gotten nothing, no solution down this line
         
         return false;
+    }
+
+    private void printRotations(Map<Point, List<TetriRotation>> rotations) {
+        for(Entry<Point, List<TetriRotation>> entry: rotations.entrySet()) {
+            int n = entry.getValue().size();
+            System.out.printf("%s = %d %s%n", entry.getKey(), n, entry.getValue());
+        }
     }
     
 
