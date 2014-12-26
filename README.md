@@ -10,6 +10,7 @@ and 3 of each of the following pieces, each with a hole in it:
 
 can you find an arrangement of the pieces so that the board is filled and 
 no alike pieces touch, even at a corner.
+You can rotate and flip the pieces however you like.
 
 One solution is:
 
@@ -27,7 +28,7 @@ You can even generate a random puzzle in about 30-45 seconds (there are many arr
 ###Heuristic for solving L-Puzzles###
 1. Start with an empty board (just the pegs).  
 2. Find a peg that has the fewest legal piece-rotation pairs, by throwing out all possibilities that go off the board or overlap another peg.  If there is a peg that has 0 legal pairs, bail out (no solution).
-3. Place one of the piece-rotation pairs on that peg.
+3. Place one of the piece-rotation pairs on that peg.  (In later steps, check to make sure the piece is far enough from other pieces of the same type).
 4. Repeat step 2.  If step 2 fails, keep trying piece-rotation pairs on the given peg.
 5. If you've exhausted all piece-rotation pairs, there is no solution, give up and back-track.
 
