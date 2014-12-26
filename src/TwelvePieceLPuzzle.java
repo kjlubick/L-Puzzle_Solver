@@ -1,11 +1,9 @@
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 
 public class TwelvePieceLPuzzle extends LPuzzle {
@@ -55,41 +53,65 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         return tetrominos[y][x];
     }
 
+    public boolean addTetrinomo(Tetromino t, Rotation r, Point peg) {
+        return addTetrinomo(t, r, peg.x, peg.y);
+    }
+
     @Override
     public boolean addTetrinomo(Tetromino t, Rotation rotation, int pegX, int pegY) {
+        // Phase 1: test if it fits
         if (puzzle[pegY][pegX] != PuzzleElement.PEG) {
             return false;
         }
-        tetrominos[pegY][pegX] = t;
-        
         int[][] calc = calculateRotation(rotation, t.yOffsets, t.xOffsets);
         
         for(int i =0;i<calc.length; i++) {
             int x = pegX + calc[i][0];
             int y = pegY + calc[i][1];
             
-            if (x < getWidth() && x >= 0 &&
-                    y < getHeight() && y >= 0 && 
-                    tetrominos[y][x] == null && puzzle[y][x] == PuzzleElement.BLANK) {
-                tetrominos[y][x] = t;
+            if (isInBoard(x, y) && isBoardClear(x, y) && isNoTouchingPieces(x, y, t)) {
+                continue; 
             } else {
-                //undo previous tetromino pieces
-                for(int j = i-1; j>=0 ;j --) {
-                    x = pegX + calc[j][0];
-                    y = pegY + calc[j][1];
-                    tetrominos[y][x] = null;
-                }
-                tetrominos[pegY][pegX] = null;
                 return false;
             }
-            
         }
+        
+        // Phase 2: set pegs
+        tetrominos[pegY][pegX] = t;
+        for(int i =0;i<calc.length; i++) {
+            int x = pegX + calc[i][0];
+            int y = pegY + calc[i][1];
+            
+            tetrominos[y][x] = t;
+        }
+        
         return true;
         
     }
 
-    public boolean addTetrinomo(Tetromino t, Rotation r, Point peg) {
-        return addTetrinomo(t, r, peg.x, peg.y);
+    private boolean isNoTouchingPieces(int x, int y, Tetromino t) {
+        for(int i = -1; i <= 1; i++) {
+            for(int j = -1;j<=1; j++) {     //check everything in a surrounding square
+                int adjX = x + i;
+                int adjY = y+ j;
+                if (isInBoard(adjX, adjY)) {
+                    if (tetrominos[adjY][adjX] == t) {
+                        // if a tetromino of the same type is within one, we can't continue
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isBoardClear(int x, int y) {
+        return tetrominos[y][x] == null && puzzle[y][x] == PuzzleElement.BLANK;
+    }
+
+    private boolean isInBoard(int x, int y) {
+        return x < getWidth() && x >= 0 &&
+                y < getHeight() && y >= 0;
     }
 
     private void removeTetrinomo(Tetromino t, Rotation r, Point peg) {
@@ -108,8 +130,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             int x = pegX + calc[i][0];
             int y = pegY + calc[i][1];
             
-            if (x < getWidth() && x >= 0 &&
-                    y < getHeight() && y >= 0) {
+            if (isInBoard(x, y)) {
                 tetrominos[y][x] = null;
             } 
         }        
@@ -181,7 +202,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     }
     
     @Override
-    public void solve() {
+    public boolean solve() {
         clearTetrinomos();
 
         List<List<TetriRotation>> treeOfSolutions = new ArrayList<List<TetriRotation>>();
@@ -190,19 +211,13 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         if (solve(treeOfSolutions, treeOfSolutionsIndex, new ArrayList<Point>(pegs))) {
             System.out.println("Solved");
             this.print();
-            List<TetriRotation> solution = new ArrayList<>();
-
-            int index = 0;
-            for (List<TetriRotation> list : treeOfSolutions) {
-                solution.add(list.get(treeOfSolutionsIndex.get(index)));
-                index++;
-            }
-
-            System.out.println(solution);
+            // todo, interpret treeOfSolutions
+            return true;
 
         } else {
             System.out.println("No Solution");
             clearTetrinomos();
+            return false;
         }
     }
 
@@ -257,7 +272,8 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             treeOfSolutionsIndex.set(treeOfSolutionsIndex.size() - 1, i);
             if (addTetrinomo(tr.tetromino, tr.rotation, pegToTry)) {
                // this.print();
-                if (solve(treeOfSolutions, treeOfSolutionsIndex, pegsLeftToLocate)) { 
+                if (solve(treeOfSolutions, treeOfSolutionsIndex,
+                        new ArrayList<Point>(pegsLeftToLocate))) {  //copy the pegs
                     return true;
                 }
                 removeTetrinomo(tr.tetromino, tr.rotation, pegToTry);
