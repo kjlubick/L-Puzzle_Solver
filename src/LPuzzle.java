@@ -62,4 +62,6 @@ public abstract class LPuzzle {
     //return true if it was successful, false otherwise
     public abstract boolean addTetrinomo(Tetromino t, Rotation rotation, int pegX, int pegY);
 
+    public abstract void solve();
+
 }
