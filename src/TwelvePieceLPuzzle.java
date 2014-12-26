@@ -56,7 +56,9 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             int x = pegX + calc[i][0];
             int y = pegY + calc[i][1];
             
-            if (tetrominos[y][x] == null) {
+            if (x < getWidth() && x >= 0 &&
+                    y < getHeight() && y >= 0 && 
+                    tetrominos[y][x] == null && puzzle[y][x] == PuzzleElement.BLANK) {
                 tetrominos[y][x] = t;
             } else {
                 //undo previous tetromino pieces
