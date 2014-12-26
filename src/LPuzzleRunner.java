@@ -4,10 +4,10 @@ import java.util.Arrays;
 public class LPuzzleRunner {
     
     public static void main(String[] args) {
-        int[][] starts = new int[][] { { 2, 0 }, { 3, 0 }, { 7, 0 }, { 4, 1 }, { 6, 1 },
+        int[][] page17 = new int[][] { { 2, 0 }, { 3, 0 }, { 7, 0 }, { 4, 1 }, { 6, 1 },
                 { 0, 2 }, { 2, 3 }, { 6, 3 }, { 2, 4 }, { 2, 5 }, { 5, 5 }, { 6, 5 } };
 
-        LPuzzle puzzle = new TwelvePieceLPuzzle(starts);
+        LPuzzle puzzle17 = new TwelvePieceLPuzzle(page17);
         
 //        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.LONG_TIP, LPuzzle.Rotation.Ninety, 2, 0));
 //        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.LONG_TIP, LPuzzle.Rotation.MirrorNinety, 2, 3));
@@ -25,9 +25,16 @@ public class LPuzzleRunner {
 //        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.MID_PIECE, LPuzzle.Rotation.MirrorOneEighty, 6, 3));
 //        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.MID_PIECE, LPuzzle.Rotation.MirrorNinety, 2, 4));
         
-        puzzle.solve();
+        puzzle17.solve();
+
+        System.out.printf("Difficulty %1.2f%n",Math.log(puzzle17.getDifficulty()));
         
-        puzzle.print();
+        int[][] page9 = new int[][] { { 0, 0 }, { 4, 0 }, { 7, 0 }, { 1, 1 }, { 4, 2 },
+                { 3, 3 }, { 6, 3 }, { 7, 3 }, { 0, 4 }, {1 , 4 }, { 4, 4 }, { 5, 4 } };
+        
+        LPuzzle puzzle9 = new TwelvePieceLPuzzle(page9);
+        puzzle9.solve();
+        System.out.printf("Difficulty %1.2f%n",Math.log(puzzle9.getDifficulty()));
     }
 
 }

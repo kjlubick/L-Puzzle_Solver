@@ -14,6 +14,8 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     
     private List<Point> pegs = new ArrayList<>();
 
+    private double difficulty = 1;
+
     public TwelvePieceLPuzzle(int[][] initialPegs) 
     {
         for(int x = 0;x < puzzle.length; x++) {
@@ -37,6 +39,11 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     @Override
     public int getHeight() {
         return 6;
+    }
+    
+    @Override
+    public double getDifficulty() {
+        return difficulty;
     }
 
     @Override
@@ -161,6 +168,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     @Override
     public boolean solve() {
         clearTetrinomos();
+        difficulty = 1;
         
         Map<Tetromino, Integer> piecesToUse = new HashMap<LPuzzle.Tetromino, Integer>(4);
         for(Tetromino tetromino : Tetromino.values()) {
@@ -202,6 +210,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             return false;
         }
         
+        
         pegsLeftToLocate.remove(pegToTry);
         
         for (int i = 0; i < trListToTry.size(); i++) {
@@ -212,6 +221,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
                 newPiecesToUse.put(tr.tetromino, newPiecesToUse.get(tr.tetromino) - 1);
                 if (addTetrinomo(tr.tetromino, tr.rotation, pegToTry)) {
                     if (solve(new ArrayList<Point>(pegsLeftToLocate), newPiecesToUse)) {  //copy the pegs, so they aren't interfered with
+                        difficulty *= smallestRotations;        //multiply here to make sure it's only done once
                         return true;
                     }
                     removeTetrinomo(tr.tetromino, tr.rotation, pegToTry);

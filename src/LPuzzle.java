@@ -64,4 +64,6 @@ public abstract class LPuzzle {
 
     public abstract boolean solve();
 
+    public abstract double getDifficulty();
+
 }
