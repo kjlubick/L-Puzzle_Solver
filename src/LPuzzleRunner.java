@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 
 public class LPuzzleRunner {
@@ -35,6 +34,11 @@ public class LPuzzleRunner {
         LPuzzle puzzle9 = new TwelvePieceLPuzzle(page9);
         puzzle9.solve();
         System.out.printf("Difficulty %1.2f%n",Math.log(puzzle9.getDifficulty()));
+        
+        LPuzzle randomPuzzle = TwelvePieceLPuzzle.random();
+        
+        randomPuzzle.print();
+        System.out.printf("Difficulty %1.2f%n",Math.log(randomPuzzle.getDifficulty()));
     }
 
 }

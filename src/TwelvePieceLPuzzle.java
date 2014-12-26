@@ -1,13 +1,21 @@
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.Map.Entry;
 
 
 public class TwelvePieceLPuzzle extends LPuzzle {
     
+    private static final int WIDTH = 8;
+
+    private static final int HEIGHT = 6;
+
     private PuzzleElement[][] puzzle = new PuzzleElement[6][8];
     
     private Tetromino[][] tetrominos = new Tetromino[6][8];
@@ -30,15 +38,30 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             pegs.add(new Point(x, y));
         }  
     }
+    
+    public TwelvePieceLPuzzle(Collection<Point> initialPegs) 
+    {
+        for(int x = 0;x < puzzle.length; x++) {
+            for(int y = 0; y< puzzle[x].length; y++) {
+                puzzle[x][y] = PuzzleElement.BLANK;
+            }
+        }
+        for(Point p: initialPegs) {
+            int x = p.x;
+            int y = p.y;
+            puzzle[y][x] = PuzzleElement.PEG;
+            pegs.add(new Point(x, y));
+        }  
+    }
 
     @Override
     public int getWidth() {
-        return 8;
+        return WIDTH;
     }
 
     @Override
     public int getHeight() {
-        return 6;
+        return HEIGHT;
     }
     
     @Override
@@ -176,14 +199,15 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         }
 
         if (solve(new ArrayList<Point>(pegs), piecesToUse)) {
-            System.out.println("Solved");
+           // System.out.println("Solved");
             this.print();
             // todo, interpret solutions by iterating through all pegs
             return true;
 
         } else {
-            System.out.println("No Solution");
+           // System.out.println("No Solution");
             clearTetrinomos();
+            difficulty = Double.POSITIVE_INFINITY;
             return false;
         }
     }
@@ -296,6 +320,28 @@ public class TwelvePieceLPuzzle extends LPuzzle {
                 return false;
             return true;
         }        
+    }
+
+    public static LPuzzle random() {
+        TwelvePieceLPuzzle random = null;
+        System.out.println("Generating random puzzle");
+        Random rand = new Random();
+        Set<Point> pegs = new HashSet<Point>(12);
+        long i = 0;
+        do {
+            if (i % 100 == 0)
+                System.out.print(".");
+            pegs.clear();
+            while (pegs.size() < 12) {
+                pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
+            }
+
+            random = new TwelvePieceLPuzzle(pegs);
+            i++;
+        } while (!random.solve());
+        random.clearTetrinomos();
+        System.out.println("Tried "+i+" bad puzzles");
+        return random;
     }
     
 
