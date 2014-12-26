@@ -161,11 +161,16 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     @Override
     public boolean solve() {
         clearTetrinomos();
+        
+        Map<Tetromino, Integer> piecesToUse = new HashMap<LPuzzle.Tetromino, Integer>(4);
+        for(Tetromino tetromino : Tetromino.values()) {
+            piecesToUse.put(tetromino, 3);      //can use 3 of each pieces
+        }
 
-        if (solve(new ArrayList<Point>(pegs))) {
+        if (solve(new ArrayList<Point>(pegs), piecesToUse)) {
             System.out.println("Solved");
             this.print();
-            // todo, interpret treeOfSolutions
+            // todo, interpret solutions by iterating through all pegs
             return true;
 
         } else {
@@ -175,7 +180,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         }
     }
 
-    private boolean solve(List<Point> pegsLeftToLocate) {
+    private boolean solve(List<Point> pegsLeftToLocate, Map<Tetromino, Integer> piecesToUse) {
         if (pegsLeftToLocate.size() == 0) { //no more pegs to play, we can only have solved the puzzle
             return true;
         }
@@ -201,12 +206,19 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         
         for (int i = 0; i < trListToTry.size(); i++) {
             TetriRotation tr = trListToTry.get(i);
-            if (addTetrinomo(tr.tetromino, tr.rotation, pegToTry)) {
-                if (solve(new ArrayList<Point>(pegsLeftToLocate))) {  //copy the pegs, so they aren't interfered with
-                    return true;
+            
+            if (piecesToUse.get(tr.tetromino) > 0) {
+                Map<Tetromino, Integer> newPiecesToUse = new HashMap<>(piecesToUse);
+                newPiecesToUse.put(tr.tetromino, newPiecesToUse.get(tr.tetromino) - 1);
+                if (addTetrinomo(tr.tetromino, tr.rotation, pegToTry)) {
+                    if (solve(new ArrayList<Point>(pegsLeftToLocate), newPiecesToUse)) {  //copy the pegs, so they aren't interfered with
+                        return true;
+                    }
+                    removeTetrinomo(tr.tetromino, tr.rotation, pegToTry);
                 }
-                removeTetrinomo(tr.tetromino, tr.rotation, pegToTry);
             }
+            
+            
         }
         
         // I've tried this peg in all configurations and gotten nothing, no solution down this line
