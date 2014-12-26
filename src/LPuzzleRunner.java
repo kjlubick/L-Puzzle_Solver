@@ -15,6 +15,15 @@ public class LPuzzleRunner {
         
         System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.SHORT_TIP, LPuzzle.Rotation.OneEighty, 3, 0));
         System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.SHORT_TIP, LPuzzle.Rotation.MirrorNinety, 6, 5));
+        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.SHORT_TIP, LPuzzle.Rotation.MirrorTwoSeventy, 6, 1));
+        
+        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.CORNER, LPuzzle.Rotation.MirrorTwoSeventy, 7, 0));
+        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.CORNER, LPuzzle.Rotation.Ninety, 5, 5));
+        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.CORNER, LPuzzle.Rotation.TwoSeventy, 0, 2));
+        
+        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.MID_PIECE, LPuzzle.Rotation.MirrorNone, 4, 1));
+        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.MID_PIECE, LPuzzle.Rotation.MirrorOneEighty, 6, 3));
+        System.out.println(puzzle.addTetrinomo(LPuzzle.Tetromino.MID_PIECE, LPuzzle.Rotation.MirrorNinety, 2, 4));
         
         puzzle.print();
     }
