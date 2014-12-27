@@ -3,7 +3,24 @@
 public abstract class LPuzzle {
     
     public enum PuzzleElement {
-        BLANK, PEG
+        BLANK(' '), PEG('o');
+        
+        public char toChar;
+
+        private PuzzleElement(char c) {
+            this.toChar = c;
+        }
+        
+        public static PuzzleElement fromChar(char c) {
+            switch (c) {
+            case ' ':
+                return BLANK;
+            case 'o':
+                return PEG;
+            default:
+                throw new RuntimeException("Invalid char for Puzzle Element '"+c+"'");
+            }
+        }
     }
     
     public enum Tetromino {
@@ -67,4 +84,17 @@ public abstract class LPuzzle {
 
     public abstract double getDifficulty();
 
+    public String export() {    //meant for outputting a computer readable version of the map
+        StringBuilder builder = new StringBuilder(getWidth() * getHeight());
+        
+        builder.append('[');
+        for(int y = 0;y<getHeight();y++) {
+            for(int x = 0; x< getWidth();x++) {
+                builder.append(getElement(x, y).toChar);
+            }
+        }
+        builder.append(']');
+        
+        return builder.toString();
+    }
 }

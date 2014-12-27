@@ -35,10 +35,19 @@ public class LPuzzleRunner {
         puzzle9.solve();
         System.out.printf("Difficulty %1.2f%n",Math.log(puzzle9.getDifficulty()));
         
+        LPuzzle reconstructedPuzzle = new TwelvePieceLPuzzle("[ o  o   o   o      o   o      o o  o    o   o o ]");
+        reconstructedPuzzle.solve();
+        System.out.printf("Difficulty %1.2f%n",Math.log(reconstructedPuzzle.getDifficulty()));
+        
         LPuzzle randomPuzzle = TwelvePieceLPuzzle.random();
         
         randomPuzzle.print();
         System.out.printf("Difficulty %1.2f%n",Math.log(randomPuzzle.getDifficulty()));
+        
+        System.out.println(randomPuzzle.export());
+        
+        randomPuzzle.print();
+        
     }
 
 }

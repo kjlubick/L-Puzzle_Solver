@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,6 +53,22 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             puzzle[y][x] = PuzzleElement.PEG;
             pegs.add(new Point(x, y));
         }  
+    }
+    
+    public TwelvePieceLPuzzle(String exportedString) {
+        exportedString = exportedString.trim();
+        if (exportedString.length() != 50 || exportedString.charAt(0) != '[' || exportedString.charAt(49) != ']') {
+            throw new RuntimeException(new InvalidObjectException("Invalid input, should be 48 chars of board, between [] brackets"));
+        }
+        for(int y = 0;y<getHeight();y++) {
+            for(int x = 0; x< getWidth();x++) {
+                PuzzleElement newPiece = PuzzleElement.fromChar(exportedString.charAt(1 + x + y * getWidth()));
+                puzzle[y][x] = newPiece;
+                if (newPiece == PuzzleElement.PEG) {
+                    pegs.add(new Point(x, y));
+                }
+            }
+        }
     }
 
     public static LPuzzle random() {
