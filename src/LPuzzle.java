@@ -97,4 +97,6 @@ public abstract class LPuzzle {
         
         return builder.toString();
     }
+
+    public abstract void clearSolution();
 }

@@ -84,13 +84,37 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             while (pegs.size() < 12) {
                 pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
             }
-    
+
             random = new TwelvePieceLPuzzle(pegs);
             i++;
-        } while (!random.solve());
+        } while (!random.solve(false));
         random.clearTetrinomos();
-        System.out.println("Tried "+i+" bad puzzles");
+        System.out.println("Tried " + i + " bad puzzles");
         return random;
+    }
+    
+    public static void random(int numPuzzles) {
+        long puzzlesTried = 0;
+        System.out.println("Generating random puzzles");
+        for (int j = 0; j < numPuzzles; j++) {
+            TwelvePieceLPuzzle random = null;
+            
+            Random rand = new Random();
+            Set<Point> pegs = new HashSet<Point>(12);
+
+            do {
+                pegs.clear();
+                while (pegs.size() < 12) {
+                    pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
+                }
+
+                random = new TwelvePieceLPuzzle(pegs);
+                puzzlesTried++;
+            } while (!random.solve(false));
+            System.out.printf("Difficulty %1.2f:  %s%n", Math.log(random.getDifficulty()), random.export());
+
+        }
+        System.out.println("Tried "+puzzlesTried+" puzzles to generate "+numPuzzles);
     }
 
     @Override
@@ -219,6 +243,11 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         return retVal;
     }
     
+    @Override
+    public void clearSolution() {
+        clearTetrinomos();
+    }
+    
     private void clearTetrinomos() {
         for(int x = 0;x < tetrominos.length; x++) {
             for(int y = 0; y< tetrominos[x].length; y++) {
@@ -226,9 +255,13 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             }
         }
     }
-
+    
     @Override
     public boolean solve() {
+        return solve(true);
+    }
+
+    private boolean solve(boolean printStuffHuh) {
         clearTetrinomos();
         difficulty = 1;
         
@@ -238,13 +271,17 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         }
 
         if (solve(new ArrayList<Point>(pegs), piecesToUse)) {
-           // System.out.println("Solved");
+            if (printStuffHuh) {
+           System.out.println("Solved");
             this.print();
+            }
             // todo, interpret solutions by iterating through all pegs
             return true;
 
         } else {
-           // System.out.println("No Solution");
+            if (printStuffHuh) {
+                System.out.println("No Solution");
+            }
             clearTetrinomos();
             difficulty = Double.POSITIVE_INFINITY;
             return false;
