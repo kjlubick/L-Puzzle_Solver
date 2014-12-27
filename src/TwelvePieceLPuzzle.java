@@ -2,6 +2,7 @@ import java.awt.Point;
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 public class TwelvePieceLPuzzle extends LPuzzle {
@@ -94,27 +97,50 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     }
     
     public static void random(int numPuzzles) {
-        long puzzlesTried = 0;
-        System.out.println("Generating random puzzles");
-        for (int j = 0; j < numPuzzles; j++) {
-            TwelvePieceLPuzzle random = null;
-            
-            Random rand = new Random();
-            Set<Point> pegs = new HashSet<Point>(12);
+        random(numPuzzles, 1);
+    }
+    
+    public static void random(final int numPuzzles, int numThreads) {
+        final AtomicInteger puzzleCount = new AtomicInteger();
+        final AtomicLong puzzlesTried = new AtomicLong();  
+        final Object syncObject = new Object();     //used to sync System.out
+        
+        Runnable runnable = new Runnable() {     
+            @Override
+            public void run() {
 
-            do {
-                pegs.clear();
-                while (pegs.size() < 12) {
-                    pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
+                System.out.println("Generating random puzzles");
+                while(puzzleCount.get() < numPuzzles) {
+                    TwelvePieceLPuzzle random = null;
+                    
+                    Random rand = new Random();
+                    Set<Point> pegs = new HashSet<Point>(12);
+                    do {
+                        pegs.clear();
+                        while (pegs.size() < 12) {
+                            pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
+                        }
+
+                        random = new TwelvePieceLPuzzle(pegs);
+                        puzzlesTried.incrementAndGet();
+                    } while (!random.solve(false));
+                    puzzleCount.incrementAndGet();
+                    synchronized (syncObject) {
+                        System.out.printf("Difficulty %1.2f:  %s%n", Math.log(random.getDifficulty()), random.export());
+                    }
                 }
+                System.out.println("Tried "+puzzlesTried.get()+" puzzles to generate "+numPuzzles);
 
-                random = new TwelvePieceLPuzzle(pegs);
-                puzzlesTried++;
-            } while (!random.solve(false));
-            System.out.printf("Difficulty %1.2f:  %s%n", Math.log(random.getDifficulty()), random.export());
-
+                System.out.println(new Date());
+            }
+        };
+        
+        for (int i = 0; i < numThreads; i++) {
+            Thread thread = new Thread(runnable);
+            thread.start();
         }
-        System.out.println("Tried "+puzzlesTried+" puzzles to generate "+numPuzzles);
+        
+
     }
 
     @Override
