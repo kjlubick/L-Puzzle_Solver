@@ -1,5 +1,6 @@
 import java.awt.Point;
 import java.io.InvalidObjectException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -7,9 +8,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -110,11 +111,10 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             public void run() {
 
                 System.out.println("Generating random puzzles");
+                Set<Point> pegs = new HashSet<Point>(12);
+                Random rand = new Random(new SecureRandom().nextLong());
                 while(puzzleCount.get() < numPuzzles) {
                     TwelvePieceLPuzzle random = null;
-                    
-                    Random rand = new Random();
-                    Set<Point> pegs = new HashSet<Point>(12);
                     do {
                         pegs.clear();
                         while (pegs.size() < 12) {
