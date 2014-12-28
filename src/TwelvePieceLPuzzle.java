@@ -6,13 +6,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
+import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -33,7 +32,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
 
     private SolvingVerbosity solveVerbosity;
 
-    private Queue<TetriPlacement> solution;
+    private Stack<TetriPlacement> solution;
 
     public TwelvePieceLPuzzle(int[][] initialPegs) 
     {
@@ -238,28 +237,6 @@ public class TwelvePieceLPuzzle extends LPuzzle {
                 y < getHeight() && y >= 0;
     }
 
-    public void removeTetrinomo(Tetromino t, Rotation r, Point peg) {
-        removeTetrinomo(t, r, peg.x, peg.y);
-    }
-
-    public void removeTetrinomo(Tetromino t, Rotation r, int pegX, int pegY) {
-        if (puzzle[pegY][pegX] != PuzzleElement.PEG) {
-            return;
-        }
-        tetrominos[pegY][pegX] = null;
-        
-        int[][] calc = calculateRotation(r, t.yOffsets, t.xOffsets);
-        
-        for(int i =0;i<calc.length; i++) {
-            int x = pegX + calc[i][0];
-            int y = pegY + calc[i][1];
-            
-            if (isInBoard(x, y)) {
-                tetrominos[y][x] = null;
-            } 
-        }        
-    }
-
     @Override
     public void removeTetrinomo(TetriPlacement p) {
         if (puzzle[p.point.y][p.point.x] != PuzzleElement.PEG) {
@@ -330,7 +307,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         }
 
         solveVerbosity = verbosity;
-        this.solution = new LinkedList<TwelvePieceLPuzzle.TetriPlacement>();
+        this.solution = new Stack<>();
         if (solve(new ArrayList<Point>(pegs), piecesToUse)) {
             if (solveVerbosity != SolvingVerbosity.SILENT) {
                 System.out.println("Solved");
@@ -338,8 +315,8 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             }
             if (solveVerbosity == SolvingVerbosity.SHOW_WORK) {
                 int i = 1;
-                for(TetriPlacement step:solution) {
-                    System.out.printf("Step %d: %s", i, step);
+                while (!solution.isEmpty()) {
+                    System.out.printf("Step %d: %s", i, solution.pop());
                     i++;
                 }
             }
@@ -394,10 +371,11 @@ public class TwelvePieceLPuzzle extends LPuzzle {
                     if (solve(new ArrayList<Point>(pegsLeftToLocate), revisedAvailablePieces)) {  //copy the pegs, so they aren't interfered with
                         difficulty *= smallestRotations;        //multiply here to make sure it's only done once
                         
-                        solution.offer(new TetriPlacement(pegToTry, tr.tetromino, tr.rotation));
+                        placement.extraDisplayString = String.format("(%d other options)", trListToTry.size() - 1);
+                        solution.push(placement);
                         return true;
                     }
-                    removeTetrinomo(tr.tetromino, tr.rotation, pegToTry);
+                    removeTetrinomo(placement);
                 }
             }
             
