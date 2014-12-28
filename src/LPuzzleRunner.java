@@ -9,8 +9,7 @@ public class LPuzzleRunner {
         TwelvePieceLPuzzle puzzle = new TwelvePieceLPuzzle("[     oo o    o    o o   o o     o         o   oo]");
         puzzle.print();
 
-        System.out.println(new Date());
-        TwelvePieceLPuzzle.random(600, 3);
+        puzzle.solveShowingWork();
     }
 
     /*

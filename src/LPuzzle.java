@@ -1,3 +1,5 @@
+import java.awt.Point;
+
 
 
 public abstract class LPuzzle {
@@ -57,14 +59,6 @@ public abstract class LPuzzle {
         int[][] rotMatrix;
     }
     
-    public abstract int getWidth();
-    
-    public abstract int getHeight();
-    
-    public abstract PuzzleElement getElement(int x, int y);
-    
-    public abstract Tetromino getTetromino(int x, int y);
-    
     public void print() {
         System.out.println();
         for (int y = 0; y < getHeight(); y++) {
@@ -76,13 +70,6 @@ public abstract class LPuzzle {
             System.out.println();
         }
     }
-
-    //return true if it was successful, false otherwise
-    public abstract boolean addTetrinomo(Tetromino t, Rotation rotation, int pegX, int pegY);
-
-    public abstract boolean solve();
-
-    public abstract double getDifficulty();
 
     public String export() {    //meant for outputting a computer readable version of the map
         StringBuilder builder = new StringBuilder(getWidth() * getHeight());
@@ -98,5 +85,95 @@ public abstract class LPuzzle {
         return builder.toString();
     }
 
+    public abstract int getWidth();
+    
+    public abstract int getHeight();
+    
+    public abstract PuzzleElement getElement(int x, int y);
+    
+    public abstract Tetromino getTetromino(int x, int y);
+    
+    /**
+     * Tries to add the tetrinomo at the given location, with the given rotation
+     * @param placement
+     * @return true if placement was legal, false otherwise
+     */
+    public abstract boolean addTetrinomo(TetriPlacement placement);
+
+    public abstract boolean solve();
+
+    public abstract double getDifficulty();
+
     public abstract void clearSolution();
+
+    public abstract boolean solveShowingWork();
+
+    public abstract void removeTetrinomo(TetriPlacement placement);
+    
+    static class TetriRotation {
+        public final Rotation rotation;
+        public final Tetromino tetromino;
+        public TetriRotation(Rotation rotation, Tetromino tetromino) {
+            this.rotation = rotation;
+            this.tetromino = tetromino;
+        }
+        @Override
+        public String toString() {
+            return "TetriRotation [rotation=" + rotation + ", tetromino=" + tetromino + ']';
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
+            return prime * result + ((tetromino == null) ? 0 : tetromino.hashCode());
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TetriRotation other = (TetriRotation) obj;
+            if (rotation != other.rotation)
+                return false;
+            if (tetromino != other.tetromino)
+                return false;
+            return true;
+        }        
+    }
+    
+    static class TetriPlacement {
+        public final Rotation rotation;
+        public final Tetromino tetromino;
+        public final Point point;
+        public String extraDisplayString;
+        
+        public TetriPlacement(Point point, Tetromino tetromino,Rotation rotation) {
+            this(point, tetromino, rotation, "");
+        }
+        
+        public TetriPlacement(Point point, TetriRotation tr) {
+            this(point, tr.tetromino, tr.rotation, "");
+        }
+        
+        public TetriPlacement(Point point, Tetromino tetromino,Rotation rotation, String extraDisplayString) {
+            this.rotation = rotation;
+            this.tetromino = tetromino;
+            this.point = point;
+            this.extraDisplayString = extraDisplayString;
+        }
+        
+        public TetriRotation getTetriRotation() {
+            return new TetriRotation(rotation, tetromino);
+        }
+        
+        @Override
+        public String toString() {
+            return String.format("Place a %s at (%d,%d) with rotation %s %s%n", tetromino.name(),
+                    point.x, point.y, rotation.name(), extraDisplayString);
+        }
+    }
 }
