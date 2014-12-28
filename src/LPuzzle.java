@@ -123,17 +123,16 @@ public abstract class LPuzzle {
     public abstract List<Point> getPegLocations();
 
     public abstract void clearTetrinomos();
-
-    protected int[][] calculateRotation(Rotation r, int[] yOffsets, int[] xOffsets) {
-        int[][] retVal = new int[xOffsets.length][2];
-        for (int i = 0; i < xOffsets.length; i++) {
-            int xOff = xOffsets[i];
-            int yOff = yOffsets[i];
+    
+    protected List<Point> getRotatedTetrominoOffsets(Rotation r, Tetromino t) {
+        List<Point> retVal = new ArrayList<Point>(t.xOffsets.length);
+        for (int i = 0; i < t.xOffsets.length; i++) {
+            int xOff = t.xOffsets[i];
+            int yOff = t.yOffsets[i];
             int rotX = r.rotMatrix[0][0] * xOff + r.rotMatrix[1][0] * yOff;
             int rotY = r.rotMatrix[0][1] * xOff + r.rotMatrix[1][1] * yOff;
     
-            retVal[i][0] = rotX;
-            retVal[i][1] = rotY;
+            retVal.add(new Point(rotX, rotY));
         }
         return retVal;
     }
@@ -297,7 +296,7 @@ public abstract class LPuzzle {
     static class TetriPlacement {
         public final Rotation rotation;
         public final Tetromino tetromino;
-        public final Point point;
+        public final Point peg;
         public String extraDisplayString;
         
         public TetriPlacement(Point point, Tetromino tetromino,Rotation rotation) {
@@ -311,7 +310,7 @@ public abstract class LPuzzle {
         public TetriPlacement(Point point, Tetromino tetromino,Rotation rotation, String extraDisplayString) {
             this.rotation = rotation;
             this.tetromino = tetromino;
-            this.point = point;
+            this.peg = point;
             this.extraDisplayString = extraDisplayString;
         }
         
@@ -322,7 +321,7 @@ public abstract class LPuzzle {
         @Override
         public String toString() {
             return String.format("Place a %s at (%d,%d) with rotation %s %s%n", tetromino.name(),
-                    point.x, point.y, rotation.name(), extraDisplayString);
+                    peg.x, peg.y, rotation.name(), extraDisplayString);
         }
     }
 }

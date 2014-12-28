@@ -167,32 +167,23 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     }
 
     @Override
-    public boolean addTetrinomo(TetriPlacement placement) {
-        Tetromino t = placement.tetromino;
-        int pegX = placement.point.x;
-        int pegY = placement.point.y;
-        // Phase 1: test if it fits
-        if (puzzle[pegY][pegX] != PuzzleElement.PEG || !isNoTouchingPieces(pegX, pegY, t)) {
+    public boolean addTetrinomo(TetriPlacement p) {
+        Tetromino t = p.tetromino;
+        
+        if (puzzle[p.peg.y][p.peg.x] != PuzzleElement.PEG) {
             return false;
         }
-        int[][] calc = calculateRotation(placement.rotation, t.yOffsets, t.xOffsets);
 
-        for (int i = 0; i < calc.length; i++) {
-            int x = pegX + calc[i][0];
-            int y = pegY + calc[i][1];
-
-            if (isInBoard(x, y) && isBoardClear(x, y) && isNoTouchingPieces(x, y, t)) {
-                continue;
-            } else {
-                return false;
-            }
+        if (!canFullyPlaceTetromino(p)) {
+            return false;
         }
-
-        // Phase 2: set pegs
-        tetrominos[pegY][pegX] = t;
-        for (int i = 0; i < calc.length; i++) {
-            int x = pegX + calc[i][0];
-            int y = pegY + calc[i][1];
+        
+        // set pegs
+        List<Point> offsets = getRotatedTetrominoOffsets(p.rotation, t);
+        tetrominos[p.peg.y][p.peg.x] = t;
+        for (Point offset: offsets) {
+            int x = p.peg.x + offset.x;
+            int y = p.peg.y + offset.y;
 
             tetrominos[y][x] = t;
         }
@@ -200,11 +191,35 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         return true;
     }
 
+    private boolean canFullyPlaceTetromino(TetriPlacement p) {
+        Tetromino t = p.tetromino;
+        // check the peg location
+        if (!isNoTouchingPieces(p.peg, t)) {
+            return false;
+        }
+        List<Point> offsets = getRotatedTetrominoOffsets(p.rotation, t);
+        // go through all the offsets
+        for (Point offset: offsets) {
+            int x = p.peg.x + offset.x;
+            int y = p.peg.y + offset.y;
+
+            if (isInBoard(x, y) && isBoardClear(x, y) && isNoTouchingPieces(x, y, t)) {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean isNoTouchingPieces(Point p, Tetromino t) {
+        return isNoTouchingPieces(p.x, p.y, t);
+    }
+
     private boolean isNoTouchingPieces(int x, int y, Tetromino t) {
         for(int i = -1; i <= 1; i++) {
             for(int j = -1;j<=1; j++) {     //check everything in a surrounding square
                 int adjX = x + i;
-                int adjY = y+ j;
+                int adjY = y + j;
                 if (isInBoard(adjX, adjY)) {
                     if (tetrominos[adjY][adjX] == t) {
                         // if a tetromino of the same type is within one, we can't continue
@@ -227,16 +242,17 @@ public class TwelvePieceLPuzzle extends LPuzzle {
 
     @Override
     public void removeTetrinomo(TetriPlacement p) {
-        if (puzzle[p.point.y][p.point.x] != PuzzleElement.PEG) {
+        if (puzzle[p.peg.y][p.peg.x] != PuzzleElement.PEG) {
             return;
         }
-        tetrominos[p.point.y][p.point.x] = null;
+        // blanket reset.  It is only guaranteed to work if a tetrinomo was previously placed here.
+        tetrominos[p.peg.y][p.peg.x] = null;
         
-        int[][] calc = calculateRotation(p.rotation, p.tetromino.yOffsets, p.tetromino.xOffsets);
+        List<Point> offsets = getRotatedTetrominoOffsets(p.rotation, p.tetromino);
         
-        for(int i =0;i<calc.length; i++) {
-            int x = p.point.x + calc[i][0];
-            int y = p.point.y + calc[i][1];
+        for (Point offset: offsets) {
+            int x = p.peg.x + offset.x;
+            int y = p.peg.y + offset.y;
             
             if (isInBoard(x, y)) {
                 tetrominos[y][x] = null;
@@ -249,6 +265,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         clearTetrinomos();
     }
     
+    @Override
     public void clearTetrinomos() {
         for(int x = 0;x < tetrominos.length; x++) {
             for(int y = 0; y< tetrominos[x].length; y++) {
