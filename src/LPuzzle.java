@@ -18,7 +18,7 @@ public abstract class LPuzzle {
             case 'o':
                 return PEG;
             default:
-                throw new RuntimeException("Invalid char for Puzzle Element '"+c+"'");
+                throw new RuntimeException("Invalid char for Puzzle Element '"+c+'\'');
             }
         }
     }

@@ -62,10 +62,11 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     public TwelvePieceLPuzzle(String exportedString) {
         exportedString = exportedString.trim();
         if (exportedString.length() != 50 || exportedString.charAt(0) != '[' || exportedString.charAt(49) != ']') {
-            throw new RuntimeException(new InvalidObjectException("Invalid input, should be 48 chars of board, between [] brackets"));
+            throw new RuntimeException(new InvalidObjectException(
+                    "Invalid input, should be 48 chars of board, between [] brackets"));
         }
-        for(int y = 0;y<getHeight();y++) {
-            for(int x = 0; x< getWidth();x++) {
+        for (int y = 0; y < getHeight(); y++) {
+            for (int x = 0; x < getWidth(); x++) {
                 PuzzleElement newPiece = PuzzleElement.fromChar(exportedString.charAt(1 + x + y * getWidth()));
                 puzzle[y][x] = newPiece;
                 if (newPiece == PuzzleElement.PEG) {
@@ -315,7 +316,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     }
 
     private boolean solve(List<Point> pegsLeftToLocate, Map<Tetromino, Integer> piecesToUse) {
-        if (pegsLeftToLocate.size() == 0) { //no more pegs to play, we can only have solved the puzzle
+        if (pegsLeftToLocate.isEmpty()) { //no more pegs to play, we can only have solved the puzzle
             return true;
         }
         
@@ -397,15 +398,14 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         }
         @Override
         public String toString() {
-            return "TetriRotation [rotation=" + rotation + ", tetromino=" + tetromino + "]";
+            return "TetriRotation [rotation=" + rotation + ", tetromino=" + tetromino + ']';
         }
         @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
             result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
-            result = prime * result + ((tetromino == null) ? 0 : tetromino.hashCode());
-            return result;
+            return prime * result + ((tetromino == null) ? 0 : tetromino.hashCode());
         }
         @Override
         public boolean equals(Object obj) {

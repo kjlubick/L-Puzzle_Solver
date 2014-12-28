@@ -22,6 +22,7 @@ public class LPuzzleRunner {
      * Tried 7385106 puzzles to generate 100 (in about 75 minutes, 100k puzzles/ min with triple thread)
      * Tried 7267251 puzzles to generate 100 (similar to above)
      * Tried 14598483 puzzles to generate 200 (in about 150 minutes, same rate as above)
+     * Tried 40690768 puzzles to generate 600 (in about 6:40 [400 min], same rate as above)
      */
     
 //     Some puzzles
