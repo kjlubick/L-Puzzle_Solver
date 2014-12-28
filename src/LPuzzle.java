@@ -1,4 +1,10 @@
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Stack;
 
 
 
@@ -59,6 +65,16 @@ public abstract class LPuzzle {
         int[][] rotMatrix;
     }
     
+    protected enum SolvingVerbosity {
+        SILENT, SHOW_FINAL, SHOW_WORK
+    }
+    
+    private double difficulty = 1;
+
+    private SolvingVerbosity solveVerbosity;
+
+    private Stack<TetriPlacement> solution;
+
     public void print() {
         System.out.println();
         for (int y = 0; y < getHeight(); y++) {
@@ -100,15 +116,148 @@ public abstract class LPuzzle {
      */
     public abstract boolean addTetrinomo(TetriPlacement placement);
 
-    public abstract boolean solve();
-
-    public abstract double getDifficulty();
-
     public abstract void clearSolution();
 
-    public abstract boolean solveShowingWork();
-
     public abstract void removeTetrinomo(TetriPlacement placement);
+    
+    public abstract List<Point> getPegLocations();
+
+    public abstract void clearTetrinomos();
+
+    protected int[][] calculateRotation(Rotation r, int[] yOffsets, int[] xOffsets) {
+        int[][] retVal = new int[xOffsets.length][2];
+        for (int i = 0; i < xOffsets.length; i++) {
+            int xOff = xOffsets[i];
+            int yOff = yOffsets[i];
+            int rotX = r.rotMatrix[0][0] * xOff + r.rotMatrix[1][0] * yOff;
+            int rotY = r.rotMatrix[0][1] * xOff + r.rotMatrix[1][1] * yOff;
+    
+            retVal[i][0] = rotX;
+            retVal[i][1] = rotY;
+        }
+        return retVal;
+    }
+
+    public boolean solveShowingWork() {
+        return solve(SolvingVerbosity.SHOW_WORK);
+    }
+
+    public boolean solve() {
+        return solve(SolvingVerbosity.SHOW_FINAL);
+    }
+
+    protected boolean solve(SolvingVerbosity verbosity) {
+        clearTetrinomos();
+        difficulty = 1;
+        
+        Map<Tetromino, Integer> piecesToUse = new HashMap<LPuzzle.Tetromino, Integer>(4);
+        for(Tetromino tetromino : Tetromino.values()) {
+            piecesToUse.put(tetromino, 3);      //can use 3 of each pieces
+        }
+    
+        solveVerbosity = verbosity;
+        this.solution = new Stack<>();
+        if (solve(new ArrayList<Point>(getPegLocations()), piecesToUse)) {
+            if (solveVerbosity != SolvingVerbosity.SILENT) {
+                System.out.println("Solved");
+                this.print();
+            }
+            if (solveVerbosity == SolvingVerbosity.SHOW_WORK) {
+                int i = 1;
+                while (!solution.isEmpty()) {
+                    System.out.printf("Step %d: %s", i, solution.pop());
+                    i++;
+                }
+            }
+            // todo, interpret solutions by iterating through all pegs
+            return true;
+    
+        } else {
+            if (solveVerbosity != SolvingVerbosity.SILENT) {
+                System.out.println("No Solution");
+            }
+            clearTetrinomos();
+            difficulty = Double.POSITIVE_INFINITY;
+            return false;
+        }
+    }
+
+    protected Map<Point, List<TetriRotation>> findPossibilitiesForPegs(List<Point> pegsToTest) {
+        Map<Point, List<TetriRotation>> originalRotations = new HashMap<>();
+        
+        for(Point peg: pegsToTest) {
+            List<TetriRotation> tetriRotations = new ArrayList<>();
+            for(Tetromino t: Tetromino.values()) {
+                for(Rotation r: Rotation.values()) {
+                    TetriPlacement placement = new TetriPlacement(peg, t, r);
+                    if (addTetrinomo(placement)) {
+                        removeTetrinomo(placement);
+                        tetriRotations.add(placement.getTetriRotation());
+                    }
+                }
+            }
+            originalRotations.put(peg, tetriRotations);
+        }
+        return originalRotations;
+    }
+
+    public double getDifficulty() {
+        return difficulty;
+    }
+
+    private boolean solve(List<Point> pegsLeftToLocate, Map<Tetromino, Integer> numberOfAvailablePieces) {
+        if (pegsLeftToLocate.isEmpty()) { //no more pegs to play, we can only have solved the puzzle
+            return true;
+        }
+        
+        Map<Point, List<TetriRotation>> rotations = findPossibilitiesForPegs(pegsLeftToLocate);
+        
+        Point pegToTry = null;
+        List<TetriRotation> trListToTry = null;
+        int smallestRotations = Integer.MAX_VALUE;
+        for (Entry<Point, List<TetriRotation>> entry : rotations.entrySet()) {
+            List<TetriRotation> list = entry.getValue();
+            if (smallestRotations > list.size()) {
+                smallestRotations = list.size();
+                trListToTry = list;
+                pegToTry = entry.getKey();
+            }
+        }
+        if (smallestRotations == 0) { // there is a peg that can't be fit
+            return false;
+        }
+        
+        
+        pegsLeftToLocate.remove(pegToTry);
+        
+        for (int i = 0; i < trListToTry.size(); i++) {
+            TetriRotation tr = trListToTry.get(i);
+            
+            if (numberOfAvailablePieces.get(tr.tetromino) > 0) {
+                Map<Tetromino, Integer> revisedAvailablePieces = new HashMap<>(numberOfAvailablePieces);
+                revisedAvailablePieces.put(tr.tetromino, revisedAvailablePieces.get(tr.tetromino) - 1);
+                
+                TetriPlacement placement = new TetriPlacement(pegToTry, tr);
+                
+                if (addTetrinomo(placement)) {
+                    if (solve(new ArrayList<Point>(pegsLeftToLocate), revisedAvailablePieces)) {  //copy the pegs, so they aren't interfered with
+                        difficulty *= smallestRotations;        //multiply here to make sure it's only done once
+                        
+                        placement.extraDisplayString = String.format("(%d other options)", trListToTry.size() - 1);
+                        solution.push(placement);
+                        return true;
+                    }
+                    removeTetrinomo(placement);
+                }
+            }
+            
+            
+        }
+        
+        // I've tried this peg in all configurations and gotten nothing, no solution down this line
+        
+        return false;
+    }
     
     static class TetriRotation {
         public final Rotation rotation;

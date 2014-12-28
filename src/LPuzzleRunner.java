@@ -6,7 +6,7 @@ public class LPuzzleRunner {
     
     public static void main(String[] args) {
         
-        TwelvePieceLPuzzle puzzle = new TwelvePieceLPuzzle("[     oo o    o    o o   o o     o         o   oo]");
+        LPuzzle puzzle = new TwelvePieceLPuzzle("[     oo o    o    o o   o o     o         o   oo]");
         puzzle.print();
 
         puzzle.solveShowingWork();
