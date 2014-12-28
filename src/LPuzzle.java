@@ -226,6 +226,7 @@ public abstract class LPuzzle {
             return false;
         }
         
+        debugPrintRotations(rotations);
         
         pegsLeftToLocate.remove(pegToTry);
         
@@ -250,12 +251,19 @@ public abstract class LPuzzle {
                 }
             }
             
-            
         }
         
         // I've tried this peg in all configurations and gotten nothing, no solution down this line
         
         return false;
+    }
+    
+    @SuppressWarnings("unused")
+    private void debugPrintRotations(Map<Point, List<TetriRotation>> rotations) {
+        for(Entry<Point, List<TetriRotation>> entry: rotations.entrySet()) {
+            int n = entry.getValue().size();
+            System.out.printf("%s = %d %s%n", entry.getKey(), n, entry.getValue());
+        }
     }
     
     static class TetriRotation {

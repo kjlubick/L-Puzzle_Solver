@@ -14,21 +14,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 
-public class TwelvePieceLPuzzle extends LPuzzle {
-    
-    private static final int WIDTH = 8;
+public abstract class AbstractLPuzzle extends LPuzzle {
 
-    private static final int HEIGHT = 6;
-
-    private PuzzleElement[][] puzzle = new PuzzleElement[6][8];
+    private PuzzleElement[][] puzzle = new PuzzleElement[getHeight()][getWidth()];
     
-    private Tetromino[][] tetrominos = new Tetromino[6][8];
+    private Tetromino[][] tetrominos = new Tetromino[getHeight()][getWidth()];
     
     private List<Point> pegs = new ArrayList<>();
 
     
 
-    public TwelvePieceLPuzzle(int[][] initialPegs) 
+    public AbstractLPuzzle(int[][] initialPegs) 
     {
         for(int x = 0;x < puzzle.length; x++) {
             for(int y = 0; y< puzzle[x].length; y++) {
@@ -43,7 +39,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         }  
     }
     
-    public TwelvePieceLPuzzle(Collection<Point> initialPegs) 
+    public AbstractLPuzzle(Collection<Point> initialPegs) 
     {
         for(int x = 0;x < puzzle.length; x++) {
             for(int y = 0; y< puzzle[x].length; y++) {
@@ -58,11 +54,12 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         }  
     }
     
-    public TwelvePieceLPuzzle(String exportedString) {
+    public AbstractLPuzzle(String exportedString) {
         exportedString = exportedString.trim();
-        if (exportedString.length() != 50 || exportedString.charAt(0) != '[' || exportedString.charAt(49) != ']') {
+        int expectedLength = 2 + getWidth()*getHeight();
+        if (exportedString.length() != expectedLength || exportedString.charAt(0) != '[' || exportedString.charAt(49) != ']') {
             throw new RuntimeException(new InvalidObjectException(
-                    "Invalid input, should be 48 chars of board, between [] brackets"));
+                    "Invalid input, should be "+expectedLength+ " chars of board, between [] brackets"));
         }
         for (int y = 0; y < getHeight(); y++) {
             for (int x = 0; x < getWidth(); x++) {
@@ -75,83 +72,12 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         }
     }
 
-    public static LPuzzle random() {
-        TwelvePieceLPuzzle random = null;
-        System.out.println("Generating random puzzle");
-        Random rand = new Random();
-        Set<Point> pegs = new HashSet<Point>(12);
-        long i = 0;
-        do {
-            if (i % 100 == 0)
-                System.out.print(".");
-            pegs.clear();
-            while (pegs.size() < 12) {
-                pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
-            }
-
-            random = new TwelvePieceLPuzzle(pegs);
-            i++;
-        } while (!random.solve(SolvingVerbosity.SILENT));
-        random.clearTetrinomos();
-        System.out.println("Tried " + i + " bad puzzles");
-        return random;
-    }
-    
-    public static void random(int numPuzzles) {
-        random(numPuzzles, 1);
-    }
-    
-    public static void random(final int numPuzzles, int numThreads) {
-        final AtomicInteger puzzleCount = new AtomicInteger();
-        final AtomicLong puzzlesTried = new AtomicLong();  
-        final Object syncObject = new Object();     //used to sync System.out
-        
-        Runnable runnable = new Runnable() {     
-            @Override
-            public void run() {
-
-                System.out.println("Generating random puzzles");
-                Set<Point> pegs = new HashSet<Point>(12);
-                Random rand = new Random(new SecureRandom().nextLong());
-                while(puzzleCount.get() < numPuzzles) {
-                    TwelvePieceLPuzzle random = null;
-                    do {
-                        pegs.clear();
-                        while (pegs.size() < 12) {
-                            pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
-                        }
-
-                        random = new TwelvePieceLPuzzle(pegs);
-                        puzzlesTried.incrementAndGet();
-                    } while (!random.solve(SolvingVerbosity.SILENT));
-                    puzzleCount.incrementAndGet();
-                    synchronized (syncObject) {
-                        System.out.printf("Difficulty %1.2f:  %s%n", Math.log(random.getDifficulty()), random.export());
-                    }
-                }
-                System.out.println("Tried "+puzzlesTried.get()+" puzzles to generate "+numPuzzles);
-
-                System.out.println(new Date());
-            }
-        };
-        
-        for (int i = 0; i < numThreads; i++) {
-            Thread thread = new Thread(runnable);
-            thread.start();
-        }
-        
-
-    }
+    @Override
+    public abstract int getWidth();
 
     @Override
-    public int getWidth() {
-        return WIDTH;
-    }
-
-    @Override
-    public int getHeight() {
-        return HEIGHT;
-    }
+    public abstract int getHeight();
+    
     @Override
     public PuzzleElement getElement(int x, int y) {
         y = y % getHeight();
@@ -170,11 +96,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
     public boolean addTetrinomo(TetriPlacement p) {
         Tetromino t = p.tetromino;
         
-        if (puzzle[p.peg.y][p.peg.x] != PuzzleElement.PEG) {
-            return false;
-        }
-
-        if (!canFullyPlaceTetromino(p)) {
+        if (puzzle[p.peg.y][p.peg.x] != PuzzleElement.PEG || !canFullyPlaceTetromino(p)) {
             return false;
         }
         
@@ -191,7 +113,7 @@ public class TwelvePieceLPuzzle extends LPuzzle {
         return true;
     }
 
-    private boolean canFullyPlaceTetromino(TetriPlacement p) {
+    protected boolean canFullyPlaceTetromino(TetriPlacement p) {
         Tetromino t = p.tetromino;
         // check the peg location
         if (!isNoTouchingPieces(p.peg, t)) {
@@ -271,16 +193,6 @@ public class TwelvePieceLPuzzle extends LPuzzle {
             for(int y = 0; y< tetrominos[x].length; y++) {
                 tetrominos[x][y] = null;
             }
-        }
-    }
-    
-
-
-    @SuppressWarnings("unused")
-    private void debugPrintRotations(Map<Point, List<TetriRotation>> rotations) {
-        for(Entry<Point, List<TetriRotation>> entry: rotations.entrySet()) {
-            int n = entry.getValue().size();
-            System.out.printf("%s = %d %s%n", entry.getKey(), n, entry.getValue());
         }
     }
 

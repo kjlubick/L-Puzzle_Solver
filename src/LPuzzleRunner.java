@@ -1,4 +1,3 @@
-import java.util.Date;
 
 
 
@@ -6,7 +5,7 @@ public class LPuzzleRunner {
     
     public static void main(String[] args) {
         
-        LPuzzle puzzle = new TwelvePieceLPuzzle("[     oo o    o    o o   o o     o         o   oo]");
+        LPuzzle puzzle = new SixByEightLPuzzle("[     oo o    o    o o   o o     o         o   oo]");
         puzzle.print();
 
         puzzle.solveShowingWork();
