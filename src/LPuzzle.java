@@ -149,10 +149,7 @@ public abstract class LPuzzle {
         clearTetrinomos();
         difficulty = 1;
         
-        Map<Tetromino, Integer> piecesToUse = new HashMap<LPuzzle.Tetromino, Integer>(4);
-        for(Tetromino tetromino : Tetromino.values()) {
-            piecesToUse.put(tetromino, 3);      //can use 3 of each pieces
-        }
+        Map<Tetromino, Integer> piecesToUse = getInitialPieces();
     
         solveVerbosity = verbosity;
         this.solution = new Stack<>();
@@ -168,7 +165,6 @@ public abstract class LPuzzle {
                     i++;
                 }
             }
-            // todo, interpret solutions by iterating through all pegs
             return true;
     
         } else {
@@ -180,6 +176,8 @@ public abstract class LPuzzle {
             return false;
         }
     }
+
+    protected abstract Map<Tetromino, Integer> getInitialPieces();
 
     protected Map<Point, List<TetriRotation>> findPossibilitiesForPegs(List<Point> pegsToTest) {
         Map<Point, List<TetriRotation>> originalRotations = new HashMap<>();
@@ -226,7 +224,7 @@ public abstract class LPuzzle {
             return false;
         }
         
-        debugPrintRotations(rotations);
+        // debugPrintRotations(rotations);
         
         pegsLeftToLocate.remove(pegToTry);
         

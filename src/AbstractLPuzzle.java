@@ -1,19 +1,15 @@
 import java.awt.Point;
 import java.io.InvalidObjectException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 
+/**
+ * A 2-darray-based implementation of the LPuzzle
+ * @author KevinLubick
+ *
+ */
 public abstract class AbstractLPuzzle extends LPuzzle {
 
     private PuzzleElement[][] puzzle = new PuzzleElement[getHeight()][getWidth()];
@@ -21,23 +17,6 @@ public abstract class AbstractLPuzzle extends LPuzzle {
     private Tetromino[][] tetrominos = new Tetromino[getHeight()][getWidth()];
     
     private List<Point> pegs = new ArrayList<>();
-
-    
-
-    public AbstractLPuzzle(int[][] initialPegs) 
-    {
-        for(int x = 0;x < puzzle.length; x++) {
-            for(int y = 0; y< puzzle[x].length; y++) {
-                puzzle[x][y] = PuzzleElement.BLANK;
-            }
-        }
-        for(int i = 0;i<initialPegs.length;i++) {
-            int x = initialPegs[i][0];
-            int y = initialPegs[i][1];
-            puzzle[y][x] = PuzzleElement.PEG;
-            pegs.add(new Point(x, y));
-        }  
-    }
     
     public AbstractLPuzzle(Collection<Point> initialPegs) 
     {
@@ -57,7 +36,7 @@ public abstract class AbstractLPuzzle extends LPuzzle {
     public AbstractLPuzzle(String exportedString) {
         exportedString = exportedString.trim();
         int expectedLength = 2 + getWidth()*getHeight();
-        if (exportedString.length() != expectedLength || exportedString.charAt(0) != '[' || exportedString.charAt(49) != ']') {
+        if (exportedString.length() != expectedLength || exportedString.charAt(0) != '[' || exportedString.charAt(expectedLength - 1) != ']') {
             throw new RuntimeException(new InvalidObjectException(
                     "Invalid input, should be "+expectedLength+ " chars of board, between [] brackets"));
         }
@@ -71,12 +50,6 @@ public abstract class AbstractLPuzzle extends LPuzzle {
             }
         }
     }
-
-    @Override
-    public abstract int getWidth();
-
-    @Override
-    public abstract int getHeight();
     
     @Override
     public PuzzleElement getElement(int x, int y) {

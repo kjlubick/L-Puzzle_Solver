@@ -5,15 +5,22 @@ public class LPuzzleRunner {
     
     public static void main(String[] args) {
         
-        LPuzzle puzzle = new SixByEightLPuzzle("[     oo o    o    o o   o o     o         o   oo]");
+        LPuzzle puzzle = new EightByEightLPuzzle("[     o  o  o   o o o   oo     o     o   o  o o          o     oo]");
         puzzle.print();
 
         puzzle.solveShowingWork();
     }
-
+    
+    /*
+     * 
+     */
+    
+// Some eight by eight puzzles
+//Difficulty 7.77:  [     o  o  o   o o o   oo     o     o   o  o o          o     oo]
+//Difficulty 13.66:  [   o       oo  o o       o  oo   o o   oo      o   o  o     o   ]
     /*
      * http://www.wolframalpha.com/input/?i=(48+chose+12)+*+100%2F7400000
-     * There are around 1_000_000 puzzles with solutions
+     * There are around 1_000_000 6x8 puzzles with solutions
      * 
      * 
      * Tried 1366566 puzzles to generate 20
@@ -23,7 +30,8 @@ public class LPuzzleRunner {
      * Tried 40690768 puzzles to generate 600 (in about 6:40 [400 min], same rate as above)
      */
     
-//     Some puzzles
+    
+//     Some six by eight puzzles
 //Difficulty 0.69:  [     oo o    o    o o   o o     o         o   oo]
 //Difficulty 1.39:  [      o o  oo   ooo          o     o   o o  o   ]
 //Difficulty 1.39:  [     o o  oo        o    o  o  o     o   ooo    ]

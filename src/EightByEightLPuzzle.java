@@ -11,17 +11,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 
-public class SixByEightLPuzzle extends AbstractLPuzzle {
+public class EightByEightLPuzzle extends AbstractLPuzzle {
     
     private static final int WIDTH = 8;
 
-    private static final int HEIGHT = 6;
+    private static final int HEIGHT = 8;
 
-    public SixByEightLPuzzle(Collection<Point> initialPegs) {
+    public EightByEightLPuzzle(Collection<Point> initialPegs) {
         super(initialPegs);
     }
 
-    public SixByEightLPuzzle(String exportedString) {
+    public EightByEightLPuzzle(String exportedString) {
         super(exportedString);
     }
 
@@ -36,29 +36,35 @@ public class SixByEightLPuzzle extends AbstractLPuzzle {
     }
     
     @Override
+    public double getDifficulty() {
+        // inflate difficulty because there are more things to check
+        return super.getDifficulty() + 5;
+    }
+    
+    @Override
     protected Map<Tetromino, Integer> getInitialPieces() {
         Map<Tetromino, Integer> piecesToUse = new HashMap<LPuzzle.Tetromino, Integer>(4);
         for (Tetromino tetromino : Tetromino.values()) {
-            piecesToUse.put(tetromino, 3); // can use 3 of each pieces
+            piecesToUse.put(tetromino, 4); // can use 4 of each pieces
         }
         return piecesToUse;
     }
-
+    
     public static LPuzzle random() {
         AbstractLPuzzle random = null;
         System.out.println("Generating random puzzle");
         Random rand = new Random();
-        Set<Point> pegs = new HashSet<Point>(12);
+        Set<Point> pegs = new HashSet<Point>(16);
         long i = 0;
         do {
             if (i % 100 == 0)
                 System.out.print(".");
             pegs.clear();
-            while (pegs.size() < 12) {
+            while (pegs.size() < 16) {
                 pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
             }
 
-            random = new SixByEightLPuzzle(pegs);
+            random = new EightByEightLPuzzle(pegs);
             i++;
         } while (!random.solve(SolvingVerbosity.SILENT));
         random.clearTetrinomos();
@@ -80,17 +86,17 @@ public class SixByEightLPuzzle extends AbstractLPuzzle {
             public void run() {
 
                 System.out.println("Generating random puzzles");
-                Set<Point> pegs = new HashSet<Point>(12);
+                Set<Point> pegs = new HashSet<Point>(16);
                 Random rand = new Random(new SecureRandom().nextLong());
                 while(puzzleCount.get() < numPuzzles) {
                     AbstractLPuzzle random = null;
                     do {
                         pegs.clear();
-                        while (pegs.size() < 12) {
+                        while (pegs.size() < 16) {
                             pegs.add(new Point(rand.nextInt(WIDTH), rand.nextInt(HEIGHT)));
                         }
 
-                        random = new SixByEightLPuzzle(pegs);
+                        random = new EightByEightLPuzzle(pegs);
                         puzzlesTried.incrementAndGet();
                     } while (!random.solve(SolvingVerbosity.SILENT));
                     puzzleCount.incrementAndGet();
