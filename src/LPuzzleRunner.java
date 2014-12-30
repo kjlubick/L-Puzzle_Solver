@@ -5,10 +5,12 @@ public class LPuzzleRunner {
     
     public static void main(String[] args) {
         
-        LPuzzle puzzle = new EightByEightLPuzzle("[     o  o  o   o o o   oo     o     o   o  o o          o     oo]");
+        LPuzzle puzzle = new EightByEightLPuzzle("[  o  o   o         o o oo   o   o  o         o      o o o   o o ]");
         puzzle.print();
 
         puzzle.solveShowingWork();
+        
+        EightByEightLPuzzle.random(20, 2);
     }
     
     /*
@@ -17,7 +19,20 @@ public class LPuzzleRunner {
     
 // Some eight by eight puzzles
 //Difficulty 7.77:  [     o  o  o   o o o   oo     o     o   o  o o          o     oo]
+//Difficulty 8.04:  [ o   o o   o      oo          o  o   o  o   o o    o o     o   o]
+//Difficulty 13.44:  [ oo   o  o     o   o        o o o  o   o  o     o   oo         o]
 //Difficulty 13.66:  [   o       oo  o o       o  oo   o o   oo      o   o  o     o   ]
+//Difficulty 14.13:  [o  o       o   o o  o       o oo o  o           o    o   o   o o]
+//Difficulty 14.64:  [  o  o     o o  o o    o          o  o   o  o  o      o o  o  o ]
+//Difficulty 15.35:  [  o          ooo        oo o o    o        o o   o o  ooo       ]
+//Difficulty 15.75:  [  o  o   o         o o oo   o   o  o         o      o o o   o o ]
+    
+//Difficulty 13.15:  [o          o  o        oooo  ooo  o         o      o      o o o ]
+//Difficulty 17.42:  [  o  o     o oo o o            ooo  o o           oo o      o   ]
+//Difficulty 10.96:  [    o  o  o   o  o      o     oo    o   o    o     o o o o o    ]
+//Difficulty 13.78:  [  o  o         ooo    o   o        oo  ooo            oo  o  o  ]
+//Difficulty 11.08:  [ o           o o   o o  o o   o   o     o  o      o o o     o  o]
+//Difficulty 12.97:  [o    o o          oo    o o oo     o  o       o ooo           o ]
     /*
      * http://www.wolframalpha.com/input/?i=(48+chose+12)+*+100%2F7400000
      * There are around 1_000_000 6x8 puzzles with solutions
