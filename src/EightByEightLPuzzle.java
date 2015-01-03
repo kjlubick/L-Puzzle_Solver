@@ -1,3 +1,4 @@
+import java.awt.Graphics;
 import java.awt.Point;
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -114,6 +115,12 @@ public class EightByEightLPuzzle extends AbstractLPuzzle {
             Thread thread = new Thread(runnable);
             thread.start();
         }
+    }
+
+    @Override
+    public void print(Graphics g, int xOffset, int yOffset) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

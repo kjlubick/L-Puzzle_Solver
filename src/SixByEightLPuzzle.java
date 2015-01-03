@@ -1,3 +1,4 @@
+import java.awt.Graphics;
 import java.awt.Point;
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -108,6 +109,11 @@ public class SixByEightLPuzzle extends AbstractLPuzzle {
             Thread thread = new Thread(runnable);
             thread.start();
         }
+    }
+
+    @Override
+    public void print(Graphics g, int xOffset, int yOffset) {
+        super.print(g, xOffset, yOffset);
     }
 
 }

@@ -1,25 +1,46 @@
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
+import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 
 
 public class PNGMaker {
 
     //print 4 puzzles to a page
-    public static void print4Puzzles(SixByEightLPuzzle... puzzle) {
-       
+    public static void print4Puzzles(LPuzzle... puzzles) {
+        PrinterJob job = PrinterJob.getPrinterJob();
+        PageFormat pf = new PageFormat();
+        Paper defaultPaper = pf.getPaper();
+        defaultPaper.setImageableArea(72/5, 72/5, defaultPaper.getWidth()-72*2/5, defaultPaper.getHeight()-72*2/5);
+        pf.setPaper(defaultPaper);
+        job.setPrintable(new FourPuzzlePrintable(puzzles), pf);
+        boolean ok = job.printDialog();
+        if (ok) {
+            try {
+                job.print();
+            } catch (PrinterException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
     
     
     private static class FourPuzzlePrintable implements Printable {
         
-        SixByEightLPuzzle[] puzzles;
+        LPuzzle[] puzzles;
+
+        public FourPuzzlePrintable(LPuzzle[] puzzles) {
+            this.puzzles = puzzles;
+        }
+
+        
 
         @Override
-        public int print(Graphics g, PageFormat pageFormat, int page) throws PrinterException {
-            if (page > 0) { /* We have only one page, and 'page' is zero-based */
+        public int print(Graphics g, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            if (pageIndex > (puzzles.length - 1)/4) {
                 return NO_SUCH_PAGE;
             }
 
@@ -29,8 +50,12 @@ public class PNGMaker {
             Graphics2D g2d = (Graphics2D)g;
             g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
-            /* Now we perform our rendering */
-            g.drawString("Hello world!", 100, 100);
+            int arrayOffset = pageIndex*4;
+            
+            for(int i = 0; i + arrayOffset <puzzles.length && i< 4;i++) {
+                LPuzzle p = puzzles[arrayOffset + i];
+                p.print(g, i % 2 * (int) Math.round(4.1 * 72), i / 2 * (int) Math.round(5.5 * 72));
+            }
 
             /* tell the caller that this page is part of the printed document */
             return PAGE_EXISTS;

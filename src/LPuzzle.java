@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -328,6 +330,21 @@ public abstract class LPuzzle {
         public String toString() {
             return String.format("Place a %s at (%d,%d) with rotation %s %s%n", tetromino.name(),
                     peg.x, peg.y, rotation.name(), extraDisplayString);
+        }
+    }
+
+    public void print(Graphics g, int xOffset, int yOffset) {
+        final int gridSize = 36;  //half an inch
+        //draws a grid
+        g.setColor(Color.black);
+        int widthInPts = getWidth() * gridSize;
+        for(int i = 0;i<= getHeight();i++) {
+            g.drawLine(0 + xOffset, i * gridSize + yOffset, widthInPts + xOffset, i * gridSize + yOffset);
+        }
+        
+        int heightInPts = getHeight() * gridSize;
+        for(int i = 0;i<=getWidth();i++) {
+            g.drawLine(i * gridSize + xOffset, 0 + yOffset, i * gridSize + xOffset, heightInPts + yOffset);
         }
     }
 }
