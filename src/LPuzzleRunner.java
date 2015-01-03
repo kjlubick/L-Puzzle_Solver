@@ -5,16 +5,16 @@ public class LPuzzleRunner {
     
     public static void main(String[] args) {
         
-        LPuzzle puzzle = new EightByEightLPuzzle("[  o  o   o         o o oo   o   o  o         o      o o o   o o ]");
-        puzzle.print();
-
-        puzzle.solveShowingWork();
+        SixByEightLPuzzle puzzle1 = new SixByEightLPuzzle("[     oo o    o    o o   o o     o         o   oo]");
+        SixByEightLPuzzle puzzle2 = new SixByEightLPuzzle("[ o    o    o    o    o  o     oo   o      o  o o]");
+        SixByEightLPuzzle puzzle3 = new SixByEightLPuzzle("[  o   oo o oo    o          o        o   o   oo ]");
+        SixByEightLPuzzle puzzle4 = new SixByEightLPuzzle("[  ooo         ooo o               oo    o    o o]");
         
-        EightByEightLPuzzle.random(20, 2);
+        PNGMaker.print4Puzzles(puzzle1, puzzle2, puzzle3, puzzle4);
     }
     
     /*
-     * Tried 106027608 puzzles to generate 21 in 14.5 hours
+     * Tried 106_027_608 puzzles to generate 21 in 14.5 hours
      */
     
 // Some eight by eight puzzles (5 was added to all the vanilla scores)
