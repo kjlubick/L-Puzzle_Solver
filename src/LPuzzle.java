@@ -1,5 +1,7 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -333,10 +335,11 @@ public abstract class LPuzzle {
         }
     }
 
-    public void print(Graphics g, int xOffset, int yOffset) {
+    public void print(Graphics2D g, int xOffset, int yOffset) {
         final int gridSize = 36;  //half an inch
         //draws a grid
         g.setColor(Color.black);
+        g.setStroke(new BasicStroke(2.0f));
         int widthInPts = getWidth() * gridSize;
         for(int i = 0;i<= getHeight();i++) {
             g.drawLine(0 + xOffset, i * gridSize + yOffset, widthInPts + xOffset, i * gridSize + yOffset);

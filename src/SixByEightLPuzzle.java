@@ -1,4 +1,4 @@
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -112,7 +112,7 @@ public class SixByEightLPuzzle extends AbstractLPuzzle {
     }
 
     @Override
-    public void print(Graphics g, int xOffset, int yOffset) {
+    public void print(Graphics2D g, int xOffset, int yOffset) {
         super.print(g, xOffset, yOffset);
     }
 

@@ -54,7 +54,7 @@ public class PNGMaker {
             
             for(int i = 0; i + arrayOffset <puzzles.length && i< 4;i++) {
                 LPuzzle p = puzzles[arrayOffset + i];
-                p.print(g, i % 2 * (int) Math.round(4.1 * 72), i / 2 * (int) Math.round(5.5 * 72));
+                p.print(g2d, i % 2 * (int) Math.round(4.1 * 72), i / 2 * (int) Math.round(5.5 * 72));
             }
 
             /* tell the caller that this page is part of the printed document */
