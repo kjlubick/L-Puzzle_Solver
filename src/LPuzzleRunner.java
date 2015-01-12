@@ -5,12 +5,12 @@ public class LPuzzleRunner {
     
     public static void main(String[] args) {
         
-        SixByEightLPuzzle puzzle1 = new SixByEightLPuzzle("[     oo o    o    o o   o o     o         o   oo]");
-        SixByEightLPuzzle puzzle2 = new SixByEightLPuzzle("[ o    o    o    o    o  o     oo   o      o  o o]");
-        SixByEightLPuzzle puzzle3 = new SixByEightLPuzzle("[  o   oo o oo    o          o        o   o   oo ]");
-        SixByEightLPuzzle puzzle4 = new SixByEightLPuzzle("[  ooo         ooo o               oo    o    o o]");
+        LPuzzle puzzle = new EightByEightLPuzzle("[  o  o   o         o o oo   o   o  o         o      o o o   o o ]");
+        puzzle.print();
+
+        puzzle.solveShowingWork();
         
-        PNGMaker.print4Puzzles(puzzle1, puzzle2, puzzle3, puzzle4);
+        EightByEightLPuzzle.random(1000, 16);
     }
     
     /*

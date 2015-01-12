@@ -156,7 +156,7 @@ public abstract class LPuzzle {
         Map<Tetromino, Integer> piecesToUse = getInitialPieces();
     
         solveVerbosity = verbosity;
-        this.solution = new Stack<>();
+        this.solution = new Stack<TetriPlacement>();
         if (solve(new ArrayList<Point>(getPegLocations()), piecesToUse)) {
             if (solveVerbosity != SolvingVerbosity.SILENT) {
                 System.out.println("Solved");
@@ -184,10 +184,10 @@ public abstract class LPuzzle {
     protected abstract Map<Tetromino, Integer> getInitialPieces();
 
     protected Map<Point, List<TetriRotation>> findPossibilitiesForPegs(List<Point> pegsToTest) {
-        Map<Point, List<TetriRotation>> originalRotations = new HashMap<>();
+        Map<Point, List<TetriRotation>> originalRotations = new HashMap<Point, List<TetriRotation>>();
         
         for(Point peg: pegsToTest) {
-            List<TetriRotation> tetriRotations = new ArrayList<>();
+            List<TetriRotation> tetriRotations = new ArrayList<TetriRotation>();
             for(Tetromino t: Tetromino.values()) {
                 for(Rotation r: Rotation.values()) {
                     TetriPlacement placement = new TetriPlacement(peg, t, r);
@@ -236,7 +236,7 @@ public abstract class LPuzzle {
             TetriRotation tr = trListToTry.get(i);
             
             if (numberOfAvailablePieces.get(tr.tetromino) > 0) {
-                Map<Tetromino, Integer> revisedAvailablePieces = new HashMap<>(numberOfAvailablePieces);
+                Map<Tetromino, Integer> revisedAvailablePieces = new HashMap<Tetromino, Integer>(numberOfAvailablePieces);
                 revisedAvailablePieces.put(tr.tetromino, revisedAvailablePieces.get(tr.tetromino) - 1);
                 
                 TetriPlacement placement = new TetriPlacement(pegToTry, tr);

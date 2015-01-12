@@ -16,7 +16,7 @@ public abstract class AbstractLPuzzle extends LPuzzle {
     
     private Tetromino[][] tetrominos = new Tetromino[getHeight()][getWidth()];
     
-    private List<Point> pegs = new ArrayList<>();
+    private List<Point> pegs = new ArrayList<Point>();
     
     public AbstractLPuzzle(Collection<Point> initialPegs) 
     {
