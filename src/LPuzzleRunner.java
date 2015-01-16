@@ -40,7 +40,11 @@ public class LPuzzleRunner {
     }
     
     /*
-     * Tried 106_027_608 puzzles to generate 21 in 14.5 hours (RTA, using 2 cores on local machine)
+	Assuming the density of these puzzles is 1 in 4.7 million, there are 
+	around 100 million 8x8 puzzles
+	
+     * Tried 106_027_608 puzzles to generate 21 in 14.5 hours (RTA, using 3 cores on local machine) ( 120k /min)
+	 * Tried 462_888_716 puzzles to generate 100 in 14.75 hours (RTA using 16 cores on remote machine) (520k /min)
      */
     
 // Some eight by eight puzzles (see generatedPuzzles for the entire list)
