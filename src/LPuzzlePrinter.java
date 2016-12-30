@@ -73,9 +73,7 @@ public class LPuzzlePrinter {
 
         public FourPuzzlePrintable(AbstractLPuzzle[] puzzles) {
             this.puzzles = puzzles;
-        }
-
-        
+        }        
 
         @Override
         public int print(Graphics g, PageFormat pageFormat, int pageIndex) throws PrinterException {

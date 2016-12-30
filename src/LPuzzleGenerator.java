@@ -4,7 +4,7 @@ import java.util.Date;
 
 
 
-public class LPuzzleRunner {
+public class LPuzzleGenerator {
     
     public static void main(String[] args) {
         System.out.println(Arrays.toString(args));
