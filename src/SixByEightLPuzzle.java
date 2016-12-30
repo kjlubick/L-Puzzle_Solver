@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 
-public class SixByEightLPuzzle extends AbstractLPuzzle {
+public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
     
     private static final int WIDTH = 8;
 
@@ -38,15 +38,15 @@ public class SixByEightLPuzzle extends AbstractLPuzzle {
     
     @Override
     protected Map<Tetromino, Integer> getInitialPieces() {
-        Map<Tetromino, Integer> piecesToUse = new HashMap<LPuzzle.Tetromino, Integer>(4);
+        Map<Tetromino, Integer> piecesToUse = new HashMap<AbstractLPuzzle.Tetromino, Integer>(4);
         for (Tetromino tetromino : Tetromino.values()) {
             piecesToUse.put(tetromino, 3); // can use 3 of each pieces
         }
         return piecesToUse;
     }
 
-    public static LPuzzle random() {
-        AbstractLPuzzle random = null;
+    public static AbstractLPuzzle random() {
+        AbstractArrayLPuzzle random = null;
         System.out.println("Generating random puzzle");
         Random rand = new Random();
         Set<Point> pegs = new HashSet<Point>(12);
@@ -84,7 +84,7 @@ public class SixByEightLPuzzle extends AbstractLPuzzle {
                 Set<Point> pegs = new HashSet<Point>(12);
                 Random rand = new Random(new SecureRandom().nextLong());
                 while(puzzleCount.get() < numPuzzles) {
-                    AbstractLPuzzle random = null;
+                    AbstractArrayLPuzzle random = null;
                     do {
                         pegs.clear();
                         while (pegs.size() < 12) {

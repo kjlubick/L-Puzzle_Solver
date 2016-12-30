@@ -5,12 +5,21 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
-public class PNGMaker {
+public class LPuzzlePrinter {
+	
+	public static void print4Puzzles(List<AbstractLPuzzle> puzzles) {
+		AbstractLPuzzle[] arr = new AbstractLPuzzle[puzzles.size()];
+		arr = puzzles.toArray(arr);
+		print4Puzzles(arr);
+	}
 
     //print 4 puzzles to a page
-    public static void print4Puzzles(LPuzzle... puzzles) {
+    public static void print4Puzzles(AbstractLPuzzle... puzzles) {
         PrinterJob job = PrinterJob.getPrinterJob();
         PageFormat pf = new PageFormat();
         Paper defaultPaper = pf.getPaper();
@@ -27,12 +36,42 @@ public class PNGMaker {
         }
     }
     
+    private static void printUsage() {
+    	System.out.println("Usage java -jar printer.jar [puzzle] [puzzle...]");
+    }
+    
+    public static void main(String[] args) {
+    	System.out.println(Arrays.toString(args));
+    	if (args == null) {
+    		printUsage();
+    		return;
+    	}
+		
+		List<AbstractLPuzzle> puzzles = new ArrayList<AbstractLPuzzle>();
+		for (String puzzle:args) {
+			puzzle = puzzle.trim();
+			if (puzzle.length() == 50) {
+				puzzles.add(new SixByEightLPuzzle(puzzle));
+			} else if (puzzle.length() == 66) {
+				puzzles.add(new EightByEightLPuzzle(puzzle));
+			} else {
+				System.out.printf("Malformed puzzle: %s\n", puzzle);
+			}
+		}
+		if (puzzles.isEmpty()) {
+			printUsage();
+			return;
+		}
+		System.out.printf("Printing %d puzzles\n", puzzles.size());
+		print4Puzzles(puzzles);
+	}
+    
     
     private static class FourPuzzlePrintable implements Printable {
         
-        LPuzzle[] puzzles;
+        AbstractLPuzzle[] puzzles;
 
-        public FourPuzzlePrintable(LPuzzle[] puzzles) {
+        public FourPuzzlePrintable(AbstractLPuzzle[] puzzles) {
             this.puzzles = puzzles;
         }
 
@@ -48,12 +87,15 @@ public class PNGMaker {
              * translate by the X and Y values in the PageFormat to avoid clipping
              */
             Graphics2D g2d = (Graphics2D)g;
+            g2d.drawString("Hello world!", 100, 100);
             g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
             int arrayOffset = pageIndex*4;
+            System.out.println("Array offset " + arrayOffset);
             
             for(int i = 0; i + arrayOffset <puzzles.length && i< 4;i++) {
-                LPuzzle p = puzzles[arrayOffset + i];
+                AbstractLPuzzle p = puzzles[arrayOffset + i];
+                System.out.println(p.export());
                 p.print(g2d, i % 2 * (int) Math.round(4.1 * 72), i / 2 * (int) Math.round(5.5 * 72));
             }
 

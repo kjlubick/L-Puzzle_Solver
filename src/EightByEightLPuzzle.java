@@ -1,4 +1,3 @@
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -12,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 
-public class EightByEightLPuzzle extends AbstractLPuzzle {
+public class EightByEightLPuzzle extends AbstractArrayLPuzzle {
     
     private static final int WIDTH = 8;
 
@@ -44,15 +43,15 @@ public class EightByEightLPuzzle extends AbstractLPuzzle {
     
     @Override
     protected Map<Tetromino, Integer> getInitialPieces() {
-        Map<Tetromino, Integer> piecesToUse = new HashMap<LPuzzle.Tetromino, Integer>(4);
+        Map<Tetromino, Integer> piecesToUse = new HashMap<AbstractLPuzzle.Tetromino, Integer>(4);
         for (Tetromino tetromino : Tetromino.values()) {
             piecesToUse.put(tetromino, 4); // can use 4 of each pieces
         }
         return piecesToUse;
     }
     
-    public static LPuzzle random() {
-        AbstractLPuzzle random = null;
+    public static AbstractLPuzzle random() {
+        AbstractArrayLPuzzle random = null;
         System.out.println("Generating random puzzle");
         Random rand = new Random();
         Set<Point> pegs = new HashSet<Point>(16);
@@ -90,7 +89,7 @@ public class EightByEightLPuzzle extends AbstractLPuzzle {
                 Set<Point> pegs = new HashSet<Point>(16);
                 Random rand = new Random(new SecureRandom().nextLong());
                 while(puzzleCount.get() < numPuzzles) {
-                    AbstractLPuzzle random = null;
+                    AbstractArrayLPuzzle random = null;
                     do {
                         pegs.clear();
                         while (pegs.size() < 16) {
@@ -115,12 +114,6 @@ public class EightByEightLPuzzle extends AbstractLPuzzle {
             Thread thread = new Thread(runnable);
             thread.start();
         }
-    }
-
-    @Override
-    public void print(Graphics2D g, int xOffset, int yOffset) {
-        // TODO Auto-generated method stub
-        
     }
 
 }
