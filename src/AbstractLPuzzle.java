@@ -105,6 +105,8 @@ public abstract class AbstractLPuzzle {
 	public abstract int getHeight();
 
 	public abstract PuzzleElement getElement(int x, int y);
+	
+	public abstract void setElement(int x, int y, PuzzleElement peg);
 
 	public abstract Tetromino getTetromino(int x, int y);
 
@@ -115,6 +117,8 @@ public abstract class AbstractLPuzzle {
 	 * @return true if placement was legal, false otherwise
 	 */
 	public abstract boolean addTetrinomo(TetriPlacement placement);
+	
+	protected abstract boolean canFullyPlaceTetromino(TetriPlacement placement);
 
 	public abstract void clearSolution();
 
@@ -187,8 +191,7 @@ public abstract class AbstractLPuzzle {
 			for (Tetromino t : Tetromino.values()) {
 				for (Rotation r : Rotation.values()) {
 					TetriPlacement placement = new TetriPlacement(peg, t, r);
-					if (addTetrinomo(placement)) {
-						removeTetrinomo(placement);
+					if (canFullyPlaceTetromino(placement)) {
 						tetriRotations.add(placement.getTetriRotation());
 					}
 				}
@@ -204,7 +207,7 @@ public abstract class AbstractLPuzzle {
 
 	private boolean solve(List<Point> pegsLeftToLocate, Map<Tetromino, Integer> numberOfAvailablePieces) {
 		if (pegsLeftToLocate.isEmpty()) { // no more pegs to play, we can only
-											// have solved the puzzle
+										  // have solved the puzzle
 			return true;
 		}
 
@@ -240,17 +243,10 @@ public abstract class AbstractLPuzzle {
 				TetriPlacement placement = new TetriPlacement(pegToTry, tr);
 
 				if (addTetrinomo(placement)) {
-					if (solve(new ArrayList<Point>(pegsLeftToLocate), revisedAvailablePieces)) { // copy
-																									// the
-																									// pegs,
-																									// so
-																									// they
-																									// aren't
-																									// interfered
-																									// with
-						difficulty *= smallestRotations; // multiply here to
-															// make sure it's
-															// only done once
+					// copy the pegs, so they aren't interfered with
+					if (solve(new ArrayList<Point>(pegsLeftToLocate), revisedAvailablePieces)) {
+						// multiply here to make sure it's only done once
+						difficulty *= smallestRotations; 
 
 						placement.extraDisplayString = String.format("(%d other options)", trListToTry.size() - 1);
 						solution.push(placement);

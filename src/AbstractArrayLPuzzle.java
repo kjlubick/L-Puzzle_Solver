@@ -18,10 +18,12 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 
 	private List<Point> pegs = new ArrayList<Point>();
 
+	private boolean pegsDirty;
+
 	public AbstractArrayLPuzzle(Collection<Point> initialPegs) {
-		for (int x = 0; x < puzzle.length; x++) {
-			for (int y = 0; y < puzzle[x].length; y++) {
-				puzzle[x][y] = PuzzleElement.BLANK;
+		for (int y = 0; y < puzzle.length; y++) {
+			for (int x = 0; x < puzzle[y].length; x++) {
+				puzzle[y][x] = PuzzleElement.BLANK;
 			}
 		}
 		for (Point p : initialPegs) {
@@ -56,6 +58,15 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 		y = y % getHeight();
 		x = x % getWidth();
 		return puzzle[y][x];
+	}
+	
+
+	@Override
+	public void setElement(int x, int y, PuzzleElement peg) {
+		y = y % getHeight();
+		x = x % getWidth();
+		puzzle[y][x] = peg;
+		pegsDirty = true;
 	}
 
 	@Override
@@ -174,7 +185,29 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 
 	@Override
 	public List<Point> getPegLocations() {
+		if (pegsDirty) {
+			pegs.clear();
+			for (int y = 0; y < getHeight(); y++) {
+				for (int x = 0; x < getWidth(); x++) {
+					if (puzzle[y][x] == PuzzleElement.PEG) {
+						pegs.add(new Point(x, y));
+					}
+				}
+			}
+		}
 		return pegs;
+	}
+
+	public List<Point> getEmptySpaces() {
+		List<Point> points = new ArrayList<Point>();
+		for (int y = 0; y < puzzle.length; y++) {
+			for (int x = 0; x < puzzle[y].length; x++) {
+				if (puzzle[y][x] == PuzzleElement.BLANK && tetrominos[y][x] == null) {
+					points.add(new Point(x,y));
+				}
+			}
+		}
+		return points;
 	}
 
 }
