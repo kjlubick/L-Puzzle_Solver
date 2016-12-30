@@ -113,7 +113,7 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 		}
 	}
 
-	// Try building a puzzle by placing all the pegs one at a time.  Doesn't currently work.
+	// Try building a puzzle by placing all the pegs one at a time.  Works, although is slower than I had hoped.
 	public static void random2(final int numPuzzles, int numThreads) {
 		final AtomicInteger puzzleCount = new AtomicInteger();
 		final AtomicLong puzzlesTried = new AtomicLong();
@@ -131,6 +131,7 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 				}
 				Collections.shuffle(possiblePoints);
 				Map<Point, List<TetriRotation>> possibilities = puzzle.findPossibilitiesForPegs(possiblePoints);
+				int thingsToTry = 0;
 				for (Entry<Point, List<TetriRotation>> entry : possibilities.entrySet()) {
 					Point p = entry.getKey();
 					puzzle.setElement(p.x, p.y, PuzzleElement.PEG);
@@ -144,6 +145,7 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 										"Something has gone horribly wrong.  Failed to add a good possibility.");
 							}
 							piecesLeft.remove(tr.tetromino);
+							puzzlesTried.incrementAndGet();
 							// Can we build a puzzle from here?
 							if (puzzleBuilder(puzzle, piecesLeft)) {
 								System.out.printf("Placed %s", tp);
@@ -153,6 +155,12 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 							// Nope, remove what we tried and try again.
 							puzzle.removeTetrinomo(tp);
 							piecesLeft.add(tr.tetromino);
+							// Try not to get too bogged down with bad things in the leaves.
+							thingsToTry++;
+							if (thingsToTry > 20) {
+								puzzle.setElement(p.x, p.y, PuzzleElement.BLANK);
+								return false;
+							}
 						}
 					}
 					puzzle.setElement(p.x, p.y, PuzzleElement.BLANK);
@@ -162,10 +170,8 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 
 			@Override
 			public void run() {
-
 				System.out.println("Generating random puzzles");
 				while (puzzleCount.get() < numPuzzles) {
-					System.out.print(".");
 					SixByEightLPuzzle random = new SixByEightLPuzzle(Collections.<Point>emptyList());
 					List<Tetromino> pieces = new ArrayList<Tetromino>();
 					pieces.add(Tetromino.CORNER);
@@ -184,14 +190,13 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 					if (puzzleBuilder(random, pieces)) {
 						random.print();
 						puzzlesTried.incrementAndGet();
-						if (random.solve(SolvingVerbosity.SHOW_WORK)) {
+						if (random.solve(SolvingVerbosity.SHOW_FINAL)) {
 							puzzleCount.incrementAndGet();
 							synchronized (syncObject) {
 								System.out.printf("Difficulty %1.2f:  %s%n", Math.log(random.getDifficulty()),
 										random.export());
 							}
 						}
-						break;
 					}
 				}
 				System.out.println("Tried " + puzzlesTried.get() + " puzzles to generate " + numPuzzles);

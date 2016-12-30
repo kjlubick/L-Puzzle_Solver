@@ -30,7 +30,7 @@ public class LPuzzleGenerator {
 
 		System.out.println("Start: " + new Date());
 		if ("6x8".equals(puzzleType)) {
-			SixByEightLPuzzle.random(numberToGenerate, numberThreads);
+			SixByEightLPuzzle.random2(numberToGenerate, numberThreads);
 		} else {
 			EightByEightLPuzzle.random(numberToGenerate, numberThreads);
 		}
