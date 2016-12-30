@@ -87,15 +87,12 @@ public class LPuzzlePrinter {
              * translate by the X and Y values in the PageFormat to avoid clipping
              */
             Graphics2D g2d = (Graphics2D)g;
-            g2d.drawString("Hello world!", 100, 100);
             g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
             int arrayOffset = pageIndex*4;
-            System.out.println("Array offset " + arrayOffset);
-            
+  
             for(int i = 0; i + arrayOffset <puzzles.length && i< 4;i++) {
                 AbstractLPuzzle p = puzzles[arrayOffset + i];
-                System.out.println(p.export());
                 p.print(g2d, i % 2 * (int) Math.round(4.1 * 72), i / 2 * (int) Math.round(5.5 * 72));
             }
 

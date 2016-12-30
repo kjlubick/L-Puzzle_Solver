@@ -111,9 +111,4 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
         }
     }
 
-    @Override
-    public void print(Graphics2D g, int xOffset, int yOffset) {
-        super.print(g, xOffset, yOffset);
-    }
-
 }
