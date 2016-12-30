@@ -47,19 +47,19 @@ public class LPuzzleGenerator {
 	 */
 
 	// Some eight by eight puzzles (see generatedPuzzles for the entire list)
-	// 2.77 [ o o o o o o oo o o o o o o oo]
-	// 3.04 [ o o o o oo o o o o o o o o o o]
-	// 4.23 [o o o o o o o o oo o o oo o o ]
-	// 5.00 [ o o o ooo o o o o o o o o o o ]
-	// 6.08 [ o o o o o o o o o o o o o o o o]
-	// 7.05 [ o o o o ooo o o o o o o o oo ]
-	// 8.15 [o o o oooo ooo o o o o o o ]
-	// 9.13 [o o o o o o o oo o o o o o o o]
-	// 10.35 [ o ooo oo o o o o o o o ooo ]
-	// 11.33 [ o o o o o o o o o oo o o o o o ]
-	// 12.42 [ o o o oo o o ooo o o oo o o ]
-	// 13.92 [ o o o o o o o o o o o o ooo o ]
-	// 14.73 [o o o o o o o oo o oo o o o o]
+	//2.77    [     o  o  o   o o o   oo     o     o   o  o o          o     oo]
+	//3.04    [ o   o o   o      oo          o  o   o  o   o o    o o     o   o]
+	//4.23    [o  o    o    o o    o o         o oo   o          o   oo   o  o ]
+	//5.00    [   o o o         ooo          o o         o o  o    o o o o  o  ]
+	//6.08    [ o           o o   o o  o o   o   o     o  o      o o o     o  o]
+	//7.05    [      o o o  o ooo             o    o  o   o  o o   o      oo   ]
+	//8.15    [o          o  o        oooo  ooo  o         o      o      o o o ]
+	//9.13    [o  o       o   o o  o       o oo o  o           o    o   o   o o]
+	//10.35   [  o          ooo        oo o o    o        o o   o o  ooo       ]
+	//11.33   [      o o  o o    o o    o        o o  oo   o  o     o   o  o   ]
+	//12.42   [  o  o     o oo o o            ooo  o o           oo o      o   ]
+	//13.92   [  o   o  o   o   o o     o       o    o o   o o   ooo         o ] 
+	//14.73   [o    o       o    o o   o  o  oo o oo           o        o  o  o]
 
 	/*
 	 * http://www.wolframalpha.com/input/?i=(48+chose+12)+*+100%2F7400000 There
@@ -76,19 +76,19 @@ public class LPuzzleGenerator {
 	 */
 
 	// Some six by eight puzzles (see generatedPuzzles for full list)
-	// 0.69 [ oo o o o o o o o o oo]
-	// 1.79 [ o o o oo o o o oo o o]
-	// 2.08 [o o o o o o oo o o o o ]
-	// 3.18 [ o o o o o o o o oo o o]
-	// 4.09 [ o o o o o o o o o o oo]
-	// 5.08 [o o o o o o o o o o o o ]
-	// 6.07 [ o o o o o o o o o o o o ]
-	// 7.05 [ o oo o o o oo o o o o ]
-	// 8.03 [o o ooo o o oo o o o ]
-	// 9.01 [ ooooo o o o o o o o]
-	// 10.04 [ o oo o ooo o o oo o ]
-	// 11.04 [o o oo oo ooo o o o]
-	// 11.84 [o o o o o o ooo o o o ]
-	// 14.14 [ o o o o oo o o o oo o ]
+	// 0.69  [     oo o    o    o o   o o     o         o   oo]
+	// 1.79  [       o o o   oo    o  o  o   oo         o    o]
+	// 2.08  [o      o  o o  o     o oo         o     o  o  o ]
+	// 3.18  [         o o o   o  o o o    o    oo   o       o]
+	// 4.09  [  o    o o o   o    o   o  o     o       o    oo]
+	// 5.08  [o   o o     o   o o        o  o     o   o o  o  ]
+	// 6.07  [   o   o   o  o  o   o     o o       o  o  o  o ]
+	// 7.05  [       o  oo  o o        o    oo o   o   o o    ]
+	// 8.03  [o  o          ooo o       o  oo      o    o  o  ]
+	// 9.01  [       ooooo        o o   o           o o   o  o]
+	//10.04  [      o   oo     o  ooo o o            oo     o ]
+	//11.04  [o         o oo         oo  ooo    o       o    o]
+	//11.84  [o    o       o   o  o     o  ooo  o o    o      ]
+	//14.14  [   o  o o o         oo  o     o  o  oo     o    ]
 
 }
