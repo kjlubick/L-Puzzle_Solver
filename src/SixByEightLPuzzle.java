@@ -113,7 +113,8 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 		}
 	}
 
-	// Try building a puzzle by placing all the pegs one at a time.  Works, although is slower than I had hoped.
+	// Try building a puzzle by placing all the pegs one at a time. Works after some tweaking to
+	// give up on non-promising puzzles sooner (e.g. after 5 misses rather than trying them all)
 	public static void random2(final int numPuzzles, int numThreads) {
 		final AtomicInteger puzzleCount = new AtomicInteger();
 		final AtomicLong puzzlesTried = new AtomicLong();

@@ -32,7 +32,7 @@ public class LPuzzleGenerator {
 		if ("6x8".equals(puzzleType)) {
 			SixByEightLPuzzle.random2(numberToGenerate, numberThreads);
 		} else {
-			EightByEightLPuzzle.random(numberToGenerate, numberThreads);
+			EightByEightLPuzzle.random2(numberToGenerate, numberThreads);
 		}
 	}
 
@@ -65,7 +65,7 @@ public class LPuzzleGenerator {
 	 * http://www.wolframalpha.com/input/?i=(48+chose+12)+*+100%2F7400000 There
 	 * are around 1_000_000 6x8 puzzles with solutions
 	 * 
-	 * 
+	 * Using random (generate random puzzle, try to solve)
 	 * Tried 1366566 puzzles to generate 20 Tried 7385106 puzzles to generate
 	 * 100 (in about 75 minutes, 100k puzzles/ min with triple thread) Tried
 	 * 7267251 puzzles to generate 100 (similar to above) Tried 14598483 puzzles
@@ -73,6 +73,9 @@ public class LPuzzleGenerator {
 	 * puzzles to generate 600 (in about 6:40 [400 min], same rate as above)
 	 * Tried 70406134 puzzles to generate 1000 (in about 1:35 [95 min], using 16
 	 * cores, 780k / minute)
+	 * 
+	 * Using random2 (generate puzzle piece by piece, give up after 5 misses)
+	 * Tried ~31302126 puzzles to generate 20 in 7 minutes with 4 threads
 	 */
 
 	// Some six by eight puzzles (see generatedPuzzles for full list)
