@@ -148,7 +148,6 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 							puzzlesTried.incrementAndGet();
 							// Can we build a puzzle from here?
 							if (puzzleBuilder(puzzle, piecesLeft)) {
-								System.out.printf("Placed %s", tp);
 								// WE DID IT.
 								return true;
 							}
@@ -157,7 +156,7 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 							piecesLeft.add(tr.tetromino);
 							// Try not to get too bogged down with bad things in the leaves.
 							thingsToTry++;
-							if (thingsToTry > 20) {
+							if (thingsToTry > 5) {
 								puzzle.setElement(p.x, p.y, PuzzleElement.BLANK);
 								return false;
 							}
@@ -188,9 +187,8 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 					pieces.add(Tetromino.SHORT_TIP);
 
 					if (puzzleBuilder(random, pieces)) {
-						random.print();
 						puzzlesTried.incrementAndGet();
-						if (random.solve(SolvingVerbosity.SHOW_FINAL)) {
+						if (random.solve(SolvingVerbosity.SILENT)) {
 							puzzleCount.incrementAndGet();
 							synchronized (syncObject) {
 								System.out.printf("Difficulty %1.2f:  %s%n", Math.log(random.getDifficulty()),
