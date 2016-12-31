@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -79,6 +78,11 @@ public class EightByEightLPuzzle extends AbstractArrayLPuzzle {
 		random(numPuzzles, 1);
 	}
 
+	/**
+	 * 
+	 * @deprecated use random2 instead, it's much much faster.
+	 */
+	@Deprecated
 	public static void random(final int numPuzzles, int numThreads) {
 		final AtomicInteger puzzleCount = new AtomicInteger();
 		final AtomicLong puzzlesTried = new AtomicLong();
@@ -118,107 +122,51 @@ public class EightByEightLPuzzle extends AbstractArrayLPuzzle {
 			thread.start();
 		}
 	}
-	
-	// Try building a puzzle by placing all the pegs one at a time.  Works, although is slower than I had hoped.
-		public static void random2(final int numPuzzles, int numThreads) {
-			final AtomicInteger puzzleCount = new AtomicInteger();
-			final AtomicLong puzzlesTried = new AtomicLong();
-			final Object syncObject = new Object(); // used to sync System.out
 
-			Runnable runnable = new Runnable() {
+	// Try building a puzzle by placing all the pegs one at a time. ~38 times
+	// faster than
+	// randomly generating puzzles and hoping for the best.
+	public static void random2(final int numPuzzles, int numThreads) {
 
-				private boolean puzzleBuilder(EightByEightLPuzzle puzzle, List<Tetromino> piecesLeft) {
-					if (piecesLeft.isEmpty()) {
-						return true;
-					}
-					List<Point> possiblePoints = puzzle.getEmptySpaces();
-					if (possiblePoints.isEmpty()) {
-						throw new RuntimeException("Something has gone horribly wrong.  Too many pieces to place");
-					}
-					Collections.shuffle(possiblePoints);
-					// Save some cycles by only thinking about 8 points.
-					int maxPoints = Math.min(8, possiblePoints.size());
-					Map<Point, List<TetriRotation>> possibilities = puzzle.findPossibilitiesForPegs(possiblePoints.subList(0, maxPoints));
-					int thingsToTry = 0;
-					for (Entry<Point, List<TetriRotation>> entry : possibilities.entrySet()) {
-						Point p = entry.getKey();
-						puzzle.setElement(p.x, p.y, PuzzleElement.PEG);
-						List<TetriRotation> list = entry.getValue();
-						Collections.shuffle(list);
-						for (TetriRotation tr : list) {
-							if (piecesLeft.contains(tr.tetromino)) {
-								TetriPlacement tp = new TetriPlacement(p, tr);
-								if (!puzzle.addTetrinomo(tp)) {
-									throw new RuntimeException(
-											"Something has gone horribly wrong.  Failed to add a good possibility.");
-								}
-								piecesLeft.remove(tr.tetromino);
-								puzzlesTried.incrementAndGet();
-								// Can we build a puzzle from here?
-								if (puzzleBuilder(puzzle, piecesLeft)) {
-									// WE DID IT.
-									return true;
-								}
-								// Nope, remove what we tried and try again.
-								puzzle.removeTetrinomo(tp);
-								piecesLeft.add(tr.tetromino);
-								// Try not to get too bogged down with bad things in the leaves.
-								thingsToTry++;
-								if (thingsToTry >= 2) {
-									puzzle.setElement(p.x, p.y, PuzzleElement.BLANK);
-									return false;
-								}
-							}
-						}
-						puzzle.setElement(p.x, p.y, PuzzleElement.BLANK);
-					}
-					return false;
-				}
+		Runnable runnable = new RandomPuzzleBuilder() {
 
-				@Override
-				public void run() {
-					System.out.println("Generating random puzzles");
-					while (puzzleCount.get() < numPuzzles) {
-						EightByEightLPuzzle random = new EightByEightLPuzzle(Collections.<Point>emptyList());
-						List<Tetromino> pieces = new ArrayList<Tetromino>();
-						pieces.add(Tetromino.CORNER);
-						pieces.add(Tetromino.CORNER);
-						pieces.add(Tetromino.CORNER);
-						pieces.add(Tetromino.CORNER);
-						pieces.add(Tetromino.LONG_TIP);
-						pieces.add(Tetromino.LONG_TIP);
-						pieces.add(Tetromino.LONG_TIP);
-						pieces.add(Tetromino.LONG_TIP);
-						pieces.add(Tetromino.MID_PIECE);
-						pieces.add(Tetromino.MID_PIECE);
-						pieces.add(Tetromino.MID_PIECE);
-						pieces.add(Tetromino.MID_PIECE);
-						pieces.add(Tetromino.SHORT_TIP);
-						pieces.add(Tetromino.SHORT_TIP);
-						pieces.add(Tetromino.SHORT_TIP);
-						pieces.add(Tetromino.SHORT_TIP);
-
-						if (puzzleBuilder(random, pieces)) {
-							puzzlesTried.incrementAndGet();
-							if (random.solve(SolvingVerbosity.SILENT)) {
-								puzzleCount.incrementAndGet();
-								synchronized (syncObject) {
-									System.out.printf("Difficulty %1.2f:  %s%n", Math.log(random.getDifficulty()),
-											random.export());
-								}
-							}
-						}
-					}
-					System.out.println("Tried " + puzzlesTried.get() + " puzzles to generate " + numPuzzles);
-
-					System.out.println(new Date());
-				}
-			};
-
-			for (int i = 0; i < numThreads; i++) {
-				Thread thread = new Thread(runnable);
-				thread.start();
+			@Override
+			public List<Tetromino> generatePieces() {
+				List<Tetromino> pieces = new ArrayList<Tetromino>();
+				pieces.add(Tetromino.CORNER);
+				pieces.add(Tetromino.CORNER);
+				pieces.add(Tetromino.CORNER);
+				pieces.add(Tetromino.CORNER);
+				pieces.add(Tetromino.LONG_TIP);
+				pieces.add(Tetromino.LONG_TIP);
+				pieces.add(Tetromino.LONG_TIP);
+				pieces.add(Tetromino.LONG_TIP);
+				pieces.add(Tetromino.MID_PIECE);
+				pieces.add(Tetromino.MID_PIECE);
+				pieces.add(Tetromino.MID_PIECE);
+				pieces.add(Tetromino.MID_PIECE);
+				pieces.add(Tetromino.SHORT_TIP);
+				pieces.add(Tetromino.SHORT_TIP);
+				pieces.add(Tetromino.SHORT_TIP);
+				pieces.add(Tetromino.SHORT_TIP);
+				return pieces;
 			}
+
+			@Override
+			public int getNumPuzzlesToSolve() {
+				return numPuzzles;
+			}
+
+			@Override
+			public AbstractLPuzzle generateEmptyPuzzle() {
+				return new EightByEightLPuzzle(Collections.<Point>emptyList());
+			}
+		};
+
+		for (int i = 0; i < numThreads; i++) {
+			Thread thread = new Thread(runnable);
+			thread.start();
 		}
+	}
 
 }

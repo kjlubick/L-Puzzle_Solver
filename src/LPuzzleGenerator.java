@@ -40,10 +40,14 @@ public class LPuzzleGenerator {
 	 * Assuming the density of these puzzles is 1 in 4.7 million, there are
 	 * around 100 million 8x8 puzzles
 	 * 
+	 * Using random (generate random puzzle, try to solve)
 	 * Tried 106_027_608 puzzles to generate 21 in 14.5 hours (RTA, using 3
 	 * cores on local machine) ( 120k /min) Tried 462_888_716 puzzles to
 	 * generate 100 in 14.75 hours (RTA using 16 cores on remote machine) (520k
 	 * /min)
+	 * 
+	 * Using random2 (generate puzzle piece by piece, give up after 2 misses)
+	 * Tried 168_301_917 puzzles to generate 20 in 23 minutes
 	 */
 
 	// Some eight by eight puzzles (see generatedPuzzles for the entire list)
@@ -76,6 +80,10 @@ public class LPuzzleGenerator {
 	 * 
 	 * Using random2 (generate puzzle piece by piece, give up after 5 misses)
 	 * Tried ~31302126 puzzles to generate 20 in 7 minutes with 4 threads
+	 * 
+	 * Using random2 (generate puzzle piece by piece, give up after 2 misses, with 
+	 * premature pruning using sublist)
+	 * Tried ~2838985 puzzles to generate 20 in 25 seconds with 4 threads
 	 */
 
 	// Some six by eight puzzles (see generatedPuzzles for full list)

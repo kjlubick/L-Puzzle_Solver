@@ -59,7 +59,6 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 		x = x % getWidth();
 		return puzzle[y][x];
 	}
-	
 
 	@Override
 	public void setElement(int x, int y, PuzzleElement peg) {
@@ -203,7 +202,7 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 		for (int y = 0; y < puzzle.length; y++) {
 			for (int x = 0; x < puzzle[y].length; x++) {
 				if (puzzle[y][x] == PuzzleElement.BLANK && tetrominos[y][x] == null) {
-					points.add(new Point(x,y));
+					points.add(new Point(x, y));
 				}
 			}
 		}
