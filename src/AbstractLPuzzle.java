@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,8 @@ public abstract class AbstractLPuzzle {
     public enum Tetromino {
     	// Colors from http://www.somersault1824.com/tips-for-designing-scientific-figures-for-color-blind-readers/
         LONG_TIP("*",new int[]{0, 0, -1}, new int[]{-1, -2, -2}, new Color(73, 0, 146)),
-        SHORT_TIP("&",new int[]{0, 1, 2}, new int[]{-1, -1, -1}, new Color(146, 0, 0)),
-        CORNER("^",new int[]{0, 0, 1}, new int[]{-1, -2, 0},     new Color(182, 219, 255)),
+        SHORT_TIP("&",new int[]{0, 1, 2}, new int[]{-1, -1, -1}, new Color(146, 73, 0)),
+        CORNER("^",new int[]{0, 0, 1}, new int[]{-1, -2, 0},     new Color(109, 182, 255)),
         MID_PIECE("%",new int[]{0, 0, 1}, new int[]{-1, 1, 1},   new Color(255, 255, 109));
         
 		private Tetromino(String symbol, int[] xOffsets, int[] yOffsets, Color printColor) {
@@ -52,20 +53,22 @@ public abstract class AbstractLPuzzle {
         Color printColor;
     }
 
-	public enum Rotation {
-		None(new int[][] { { 1, 0 }, { 0, 1 } }), Ninety(new int[][] { { 0, -1 }, { 1, 0 } }), OneEighty(
-				new int[][] { { -1, 0 }, { 0, -1 } }), TwoSeventy(new int[][] { { 0, 1 }, { -1, 0 } }), MirrorNone(
-						new int[][] { { -1, 0 }, { 0, 1 } }), MirrorNinety(
-								new int[][] { { 0, -1 }, { -1, 0 } }), MirrorOneEighty(
-										new int[][] { { 1, 0 }, { 0, -1 } }), MirrorTwoSeventy(
-												new int[][] { { 0, 1 }, { 1, 0 } });
-
-		private Rotation(int[][] rotMatrix) {
-			this.rotMatrix = rotMatrix;
-		}
-
-		int[][] rotMatrix;
-	}
+    public enum Rotation {
+        None(new int[][]{{1,0},{0,1}}), 
+        Ninety(new int[][]{{0,-1},{1,0}}), 
+        OneEighty(new int[][]{{-1,0},{0,-1}}), 
+        TwoSeventy(new int[][]{{0,1},{-1,0}}), 
+        MirrorNone(new int[][]{{-1,0},{0,1}}), 
+        MirrorNinety(new int[][]{{0,-1},{-1,0}}),
+        MirrorOneEighty(new int[][]{{1,0},{0,-1}}), 
+        MirrorTwoSeventy(new int[][]{{0,1},{1,0}});
+        
+        private Rotation(int[][] rotMatrix) {
+            this.rotMatrix = rotMatrix;
+        }
+        
+        int[][] rotMatrix;
+    }
 
 	private double difficulty = 1;
 
@@ -350,14 +353,18 @@ public abstract class AbstractLPuzzle {
 	public void print(Graphics2D g, int xOffset, int yOffset, int puzzleNumber, PrintingOptions options) {
 		final int gridSize = 36; // half an inch
 		
-		List<TetriPlacement> tetrinomos = getTetrinomos();
-		int toShow = 0;
+		List<TetriPlacement> tetrinomosToShow = Collections.emptyList();
 		if (options == PrintingOptions.WITH_HINT) {
-			toShow = 3;
+			tetrinomosToShow = new ArrayList<TetriPlacement>();
+			List<TetriPlacement> allTetrinomos = getTetrinomos();
+			// Give the two "easiest" ones to place and the last one, which is likely the hardest.
+			tetrinomosToShow.add(allTetrinomos.get(0));
+			tetrinomosToShow.add(allTetrinomos.get(1));
+			tetrinomosToShow.add(allTetrinomos.get(allTetrinomos.size()-1));
 		} else if (options == PrintingOptions.WITH_SOLUTION) {
-			toShow = tetrinomos.size();
+			tetrinomosToShow = getTetrinomos();
 		}
-		for (TetriPlacement t :tetrinomos.subList(0, toShow)) {
+		for (TetriPlacement t :tetrinomosToShow) {
 			List<Point> points = getRotatedTetrominoOffsets(t.rotation, t.tetromino);
 			g.setColor(t.tetromino.printColor);
 			for (Point offset : points) {

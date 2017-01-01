@@ -79,6 +79,9 @@ public class LPuzzlePrinter {
 		List<AbstractLPuzzle> puzzles = new ArrayList<AbstractLPuzzle>();
 		for (String puzzle : args) {
 			puzzle = puzzle.trim();
+			if (puzzle.startsWith("-")) {
+				continue;
+			}
 			if (puzzle.length() == 50) {
 				puzzles.add(new SixByEightLPuzzle(puzzle));
 			} else if (puzzle.length() == 66) {
@@ -196,7 +199,7 @@ public class LPuzzlePrinter {
 
 		private void printFullPage(String msg, Graphics2D g2d) {
 			g2d.setColor(Color.black);
-			g2d.setFont(g2d.getFont().deriveFont(24f));
+			g2d.setFont(g2d.getFont().deriveFont(28f));
 			g2d.drawString(msg, 100, 100);
 		}
 
