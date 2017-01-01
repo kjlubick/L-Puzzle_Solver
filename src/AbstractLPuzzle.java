@@ -155,8 +155,8 @@ public abstract class AbstractLPuzzle {
 	}
 
 	private boolean solve(List<Point> pegsLeftToLocate, Map<Tetromino, Integer> numberOfAvailablePieces) {
-		if (pegsLeftToLocate.isEmpty()) { // no more pegs to play, we can only
-											// have solved the puzzle
+		// no more pegs to play, we must have solved the puzzle
+		if (pegsLeftToLocate.isEmpty()) { 
 			return true;
 		}
 
@@ -176,8 +176,6 @@ public abstract class AbstractLPuzzle {
 		if (smallestRotations == 0) { // there is a peg that can't be fit
 			return false;
 		}
-
-		// debugPrintRotations(rotations);
 
 		pegsLeftToLocate.remove(pegToTry);
 

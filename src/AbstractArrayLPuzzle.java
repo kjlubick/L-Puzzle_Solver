@@ -5,19 +5,25 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A 2-d array-based implementation of the LPuzzle
+ * A 2d-array based implementation of the LPuzzle
  * 
  * @author KevinLubick
  *
  */
 public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 
+	// puzzle holds the pegs/blanks.  This is kept separate from the tetrominoes to make for easier
+	// solving code.
 	private PuzzleElement[][] puzzle = new PuzzleElement[getHeight()][getWidth()];
-
-	private Tetromino[][] tetrominos = new Tetromino[getHeight()][getWidth()];
 	
-	private List<TetriPlacement> placedTetrominos = new ArrayList<TetriPlacement>();
+	// The tetrominoes that have been added to this board, in the order they were applied.
+	private List<TetriPlacement> placedTetrominoes = new ArrayList<TetriPlacement>();
 
+	// The tetrominoes locations on the board.  This has all the x,y coordinates that are filled.
+	private Tetromino[][] tetrominoes = new Tetromino[getHeight()][getWidth()];
+	
+	// A list of pegs in this board.  This can be dynamically changed (e.g. when building a random
+	// board), so getPegLocations will use pegsDirty to see if it needs to be dynamically recalculated.
 	private List<Point> pegs = new ArrayList<Point>();
 
 	private boolean pegsDirty;
@@ -74,12 +80,12 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 	public Tetromino getTetromino(int x, int y) {
 		y = y % getHeight();
 		x = x % getWidth();
-		return tetrominos[y][x];
+		return tetrominoes[y][x];
 	}
 	
 	@Override
 	public List<TetriPlacement> getTetrinomos() {
-		return placedTetrominos;
+		return placedTetrominoes;
 	}
 
 	@Override
@@ -90,25 +96,26 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 			return false;
 		}
 		
-		placedTetrominos.add(p);
+		placedTetrominoes.add(p);
 
 		// set pegs
 		List<Point> offsets = getRotatedTetrominoOffsets(p.rotation, t);
-		tetrominos[p.peg.y][p.peg.x] = t;
+		tetrominoes[p.peg.y][p.peg.x] = t;
 		for (Point offset : offsets) {
 			int x = p.peg.x + offset.x;
 			int y = p.peg.y + offset.y;
 
-			tetrominos[y][x] = t;
+			tetrominoes[y][x] = t;
 		}
 
 		return true;
 	}
 
+	@Override
 	protected boolean canFullyPlaceTetromino(TetriPlacement p) {
 		Tetromino t = p.tetromino;
 		// check the peg location
-		if (!isNoTouchingPieces(p.peg, t)) {
+		if (tetrominoes[p.peg.y][p.peg.x] != null) {
 			return false;
 		}
 		List<Point> offsets = getRotatedTetrominoOffsets(p.rotation, t);
@@ -117,7 +124,7 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 			int x = p.peg.x + offset.x;
 			int y = p.peg.y + offset.y;
 
-			if (isInBoard(x, y) && isBoardClear(x, y) && isNoTouchingPieces(x, y, t)) {
+			if (isInBoard(x, y) && isBoardClear(x, y)) {
 				continue;
 			} else {
 				return false;
@@ -126,30 +133,8 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 		return true;
 	}
 
-	private boolean isNoTouchingPieces(Point p, Tetromino t) {
-		return isNoTouchingPieces(p.x, p.y, t);
-	}
-
-	private boolean isNoTouchingPieces(int x, int y, Tetromino t) {
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) { // check everything in a surrounding
-											// square
-				int adjX = x + i;
-				int adjY = y + j;
-				if (isInBoard(adjX, adjY)) {
-					if (tetrominos[adjY][adjX] == t) {
-						// if a tetromino of the same type is within one, we
-						// can't continue
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-
 	private boolean isBoardClear(int x, int y) {
-		return tetrominos[y][x] == null && puzzle[y][x] == PuzzleElement.BLANK;
+		return tetrominoes[y][x] == null && puzzle[y][x] == PuzzleElement.BLANK;
 	}
 
 	private boolean isInBoard(int x, int y) {
@@ -161,10 +146,10 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 		if (puzzle[p.peg.y][p.peg.x] != PuzzleElement.PEG) {
 			return;
 		}
-		placedTetrominos.remove(p);
+		placedTetrominoes.remove(p);
 		// blanket reset. It is only guaranteed to work if a tetrinomo was
 		// previously placed here.
-		tetrominos[p.peg.y][p.peg.x] = null;
+		tetrominoes[p.peg.y][p.peg.x] = null;
 
 		List<Point> offsets = getRotatedTetrominoOffsets(p.rotation, p.tetromino);
 
@@ -173,7 +158,7 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 			int y = p.peg.y + offset.y;
 
 			if (isInBoard(x, y)) {
-				tetrominos[y][x] = null;
+				tetrominoes[y][x] = null;
 			}
 		}
 	}
@@ -185,12 +170,12 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 
 	@Override
 	public void clearTetrinomos() {
-		for (int x = 0; x < tetrominos.length; x++) {
-			for (int y = 0; y < tetrominos[x].length; y++) {
-				tetrominos[x][y] = null;
+		for (int x = 0; x < tetrominoes.length; x++) {
+			for (int y = 0; y < tetrominoes[x].length; y++) {
+				tetrominoes[x][y] = null;
 			}
 		}
-		placedTetrominos.clear();
+		placedTetrominoes.clear();
 	}
 
 	@Override
@@ -208,11 +193,12 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 		return pegs;
 	}
 
+	@Override
 	public List<Point> getEmptySpaces() {
 		List<Point> points = new ArrayList<Point>();
 		for (int y = 0; y < puzzle.length; y++) {
 			for (int x = 0; x < puzzle[y].length; x++) {
-				if (puzzle[y][x] == PuzzleElement.BLANK && tetrominos[y][x] == null) {
+				if (puzzle[y][x] == PuzzleElement.BLANK && tetrominoes[y][x] == null) {
 					points.add(new Point(x, y));
 				}
 			}
