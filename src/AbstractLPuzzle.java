@@ -18,6 +18,7 @@ public abstract class AbstractLPuzzle {
 
 	private Stack<TetriPlacement> solution;
 
+	// Prints the board in a human-readable way to stdout, including any tetrominoes.
 	public void printToStdOut() {
 		System.out.println();
 		for (int y = 0; y < getHeight(); y++) {
@@ -30,8 +31,8 @@ public abstract class AbstractLPuzzle {
 		}
 	}
 
-	public String export() { // meant for outputting a computer readable version
-								// of the map
+	// Outputs a text-serialized version of the map
+	public String export() {
 		StringBuilder builder = new StringBuilder(getWidth() * getHeight());
 
 		builder.append('[');
