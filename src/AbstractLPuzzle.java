@@ -12,64 +12,6 @@ import java.util.Stack;
 
 public abstract class AbstractLPuzzle {
 
-	public enum PuzzleElement {
-		BLANK(' '), PEG('o');
-
-		final char toChar;
-
-		private PuzzleElement(char c) {
-			this.toChar = c;
-		}
-
-		public static PuzzleElement fromChar(char c) {
-			switch (c) {
-			case ' ':
-				return BLANK;
-			case 'o':
-				return PEG;
-			default:
-				throw new RuntimeException("Invalid char for Puzzle Element '" + c + '\'');
-			}
-		}
-	}
-
-    public enum Tetromino {
-    	// Colors from http://www.somersault1824.com/tips-for-designing-scientific-figures-for-color-blind-readers/
-        LONG_TIP("*",new int[]{0, 0, -1}, new int[]{-1, -2, -2}, new Color(73, 0, 146)),
-        SHORT_TIP("&",new int[]{0, 1, 2}, new int[]{-1, -1, -1}, new Color(146, 73, 0)),
-        CORNER("^",new int[]{0, 0, 1}, new int[]{-1, -2, 0},     new Color(109, 182, 255)),
-        MID_PIECE("%",new int[]{0, 0, 1}, new int[]{-1, 1, 1},   new Color(255, 255, 109));
-        
-		private Tetromino(String symbol, int[] xOffsets, int[] yOffsets, Color printColor) {
-            this.symbol = symbol;
-            this.xOffsets = xOffsets;
-            this.yOffsets = yOffsets;
-            this.printColor = printColor;
-        }
-        
-        final String symbol;
-        final int[] xOffsets;
-        final int[] yOffsets;
-        final Color printColor;
-    }
-
-    public enum Rotation {
-        None(new int[][]{{1,0},{0,1}}), 
-        Ninety(new int[][]{{0,-1},{1,0}}), 
-        OneEighty(new int[][]{{-1,0},{0,-1}}), 
-        TwoSeventy(new int[][]{{0,1},{-1,0}}), 
-        MirrorNone(new int[][]{{-1,0},{0,1}}), 
-        MirrorNinety(new int[][]{{0,-1},{-1,0}}),
-        MirrorOneEighty(new int[][]{{1,0},{0,-1}}), 
-        MirrorTwoSeventy(new int[][]{{0,1},{1,0}});
-        
-        private Rotation(int[][] rotMatrix) {
-            this.rotMatrix = rotMatrix;
-        }
-        
-        final int[][] rotMatrix;
-    }
-
 	private double difficulty = 1;
 
 	private SolvingVerbosity solveVerbosity;
@@ -279,77 +221,6 @@ public abstract class AbstractLPuzzle {
 		}
 	}
 
-	static class TetriRotation {
-		public final Rotation rotation;
-		public final Tetromino tetromino;
-
-		public TetriRotation(Rotation rotation, Tetromino tetromino) {
-			this.rotation = rotation;
-			this.tetromino = tetromino;
-		}
-
-		@Override
-		public String toString() {
-			return "TetriRotation [rotation=" + rotation + ", tetromino=" + tetromino + ']';
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
-			return prime * result + ((tetromino == null) ? 0 : tetromino.hashCode());
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			TetriRotation other = (TetriRotation) obj;
-			if (rotation != other.rotation)
-				return false;
-			if (tetromino != other.tetromino)
-				return false;
-			return true;
-		}
-	}
-
-	static class TetriPlacement {
-		public final Rotation rotation;
-		public final Tetromino tetromino;
-		public final Point peg;
-		public String extraDisplayString;
-
-		public TetriPlacement(Point point, Tetromino tetromino, Rotation rotation) {
-			this(point, tetromino, rotation, "");
-		}
-
-		public TetriPlacement(Point point, TetriRotation tr) {
-			this(point, tr.tetromino, tr.rotation, "");
-		}
-
-		public TetriPlacement(Point point, Tetromino tetromino, Rotation rotation, String extraDisplayString) {
-			this.rotation = rotation;
-			this.tetromino = tetromino;
-			this.peg = point;
-			this.extraDisplayString = extraDisplayString;
-		}
-
-		public TetriRotation getTetriRotation() {
-			return new TetriRotation(rotation, tetromino);
-		}
-
-		@Override
-		public String toString() {
-			return String.format("Place a %s at (%d,%d) with rotation %s %s%n", tetromino.name(), peg.x, peg.y,
-					rotation.name(), extraDisplayString);
-		}
-	}
-
 	public void print(Graphics2D g, int xOffset, int yOffset, int puzzleNumber, PrintingOptions options) {
 		final int gridSize = 36; // half an inch
 		
@@ -418,4 +289,135 @@ enum SolvingVerbosity {
 
 enum PrintingOptions {
 	JUST_PUZZLE, WITH_HINT, WITH_SOLUTION
+}
+
+
+enum PuzzleElement {
+	BLANK(' '), PEG('o');
+
+	final char toChar;
+
+	private PuzzleElement(char c) {
+		this.toChar = c;
+	}
+
+	public static PuzzleElement fromChar(char c) {
+		switch (c) {
+		case ' ':
+			return BLANK;
+		case 'o':
+			return PEG;
+		default:
+			throw new RuntimeException("Invalid char for Puzzle Element '" + c + '\'');
+		}
+	}
+}
+
+enum Tetromino {
+	// Colors from http://www.somersault1824.com/tips-for-designing-scientific-figures-for-color-blind-readers/
+    LONG_TIP("*",new int[]{0, 0, -1}, new int[]{-1, -2, -2}, new Color(73, 0, 146)),
+    SHORT_TIP("&",new int[]{0, 1, 2}, new int[]{-1, -1, -1}, new Color(146, 73, 0)),
+    CORNER("^",new int[]{0, 0, 1}, new int[]{-1, -2, 0},     new Color(109, 182, 255)),
+    MID_PIECE("%",new int[]{0, 0, 1}, new int[]{-1, 1, 1},   new Color(255, 255, 109));
+    
+	private Tetromino(String symbol, int[] xOffsets, int[] yOffsets, Color printColor) {
+        this.symbol = symbol;
+        this.xOffsets = xOffsets;
+        this.yOffsets = yOffsets;
+        this.printColor = printColor;
+    }
+    
+    final String symbol;
+    final int[] xOffsets;
+    final int[] yOffsets;
+    final Color printColor;
+}
+
+enum Rotation {
+    None(new int[][]{{1,0},{0,1}}), 
+    Ninety(new int[][]{{0,-1},{1,0}}), 
+    OneEighty(new int[][]{{-1,0},{0,-1}}), 
+    TwoSeventy(new int[][]{{0,1},{-1,0}}), 
+    MirrorNone(new int[][]{{-1,0},{0,1}}), 
+    MirrorNinety(new int[][]{{0,-1},{-1,0}}),
+    MirrorOneEighty(new int[][]{{1,0},{0,-1}}), 
+    MirrorTwoSeventy(new int[][]{{0,1},{1,0}});
+    
+    private Rotation(int[][] rotMatrix) {
+        this.rotMatrix = rotMatrix;
+    }
+    
+    final int[][] rotMatrix;
+}
+
+
+class TetriRotation {
+	public final Rotation rotation;
+	public final Tetromino tetromino;
+
+	public TetriRotation(Rotation rotation, Tetromino tetromino) {
+		this.rotation = rotation;
+		this.tetromino = tetromino;
+	}
+
+	@Override
+	public String toString() {
+		return "TetriRotation [rotation=" + rotation + ", tetromino=" + tetromino + ']';
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
+		return prime * result + ((tetromino == null) ? 0 : tetromino.hashCode());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TetriRotation other = (TetriRotation) obj;
+		if (rotation != other.rotation)
+			return false;
+		if (tetromino != other.tetromino)
+			return false;
+		return true;
+	}
+}
+
+class TetriPlacement {
+	public final Rotation rotation;
+	public final Tetromino tetromino;
+	public final Point peg;
+	public String extraDisplayString;
+
+	public TetriPlacement(Point point, Tetromino tetromino, Rotation rotation) {
+		this(point, tetromino, rotation, "");
+	}
+
+	public TetriPlacement(Point point, TetriRotation tr) {
+		this(point, tr.tetromino, tr.rotation, "");
+	}
+
+	public TetriPlacement(Point point, Tetromino tetromino, Rotation rotation, String extraDisplayString) {
+		this.rotation = rotation;
+		this.tetromino = tetromino;
+		this.peg = point;
+		this.extraDisplayString = extraDisplayString;
+	}
+
+	public TetriRotation getTetriRotation() {
+		return new TetriRotation(rotation, tetromino);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Place a %s at (%d,%d) with rotation %s %s%n", tetromino.name(), peg.x, peg.y,
+				rotation.name(), extraDisplayString);
+	}
 }

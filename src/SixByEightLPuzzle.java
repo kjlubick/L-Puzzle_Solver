@@ -39,7 +39,7 @@ public class SixByEightLPuzzle extends AbstractArrayLPuzzle {
 
 	@Override
 	protected Map<Tetromino, Integer> getInitialPieces() {
-		Map<Tetromino, Integer> piecesToUse = new HashMap<AbstractLPuzzle.Tetromino, Integer>(4);
+		Map<Tetromino, Integer> piecesToUse = new HashMap<Tetromino, Integer>(4);
 		for (Tetromino tetromino : Tetromino.values()) {
 			piecesToUse.put(tetromino, 3); // can use 3 of each pieces
 		}

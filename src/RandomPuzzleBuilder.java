@@ -13,7 +13,7 @@ public abstract class RandomPuzzleBuilder implements Runnable {
 	private static AtomicLong puzzlesTried = new AtomicLong();
 	private static Object syncObject = new Object(); // used to sync System.out
 
-	private boolean puzzleBuilder(AbstractLPuzzle puzzle, List<AbstractLPuzzle.Tetromino> piecesLeft) {
+	private boolean puzzleBuilder(AbstractLPuzzle puzzle, List<Tetromino> piecesLeft) {
 		if (piecesLeft.isEmpty()) {
 			return true;
 		}
@@ -25,17 +25,17 @@ public abstract class RandomPuzzleBuilder implements Runnable {
 		// Save some cycles by only thinking about up to 8 points, since we bail
 		// out after 2 failures.
 		int maxPoints = Math.min(8, possiblePoints.size());
-		Map<Point, List<AbstractLPuzzle.TetriRotation>> possibilities = puzzle
+		Map<Point, List<TetriRotation>> possibilities = puzzle
 				.findPossibilitiesForPegs(possiblePoints.subList(0, maxPoints));
 		int thingsToTry = 0;
-		for (Entry<Point, List<AbstractLPuzzle.TetriRotation>> entry : possibilities.entrySet()) {
+		for (Entry<Point, List<TetriRotation>> entry : possibilities.entrySet()) {
 			Point p = entry.getKey();
-			puzzle.setElement(p.x, p.y, AbstractLPuzzle.PuzzleElement.PEG);
-			List<AbstractLPuzzle.TetriRotation> list = entry.getValue();
+			puzzle.setElement(p.x, p.y, PuzzleElement.PEG);
+			List<TetriRotation> list = entry.getValue();
 			Collections.shuffle(list);
-			for (AbstractLPuzzle.TetriRotation tr : list) {
+			for (TetriRotation tr : list) {
 				if (piecesLeft.contains(tr.tetromino)) {
-					AbstractLPuzzle.TetriPlacement tp = new AbstractLPuzzle.TetriPlacement(p, tr);
+					TetriPlacement tp = new TetriPlacement(p, tr);
 					if (!puzzle.addTetrinomo(tp)) {
 						throw new RuntimeException(
 								"Something has gone horribly wrong.  Failed to add a good possibility.");
@@ -54,12 +54,12 @@ public abstract class RandomPuzzleBuilder implements Runnable {
 					// leaves.
 					thingsToTry++;
 					if (thingsToTry >= 2) {
-						puzzle.setElement(p.x, p.y, AbstractLPuzzle.PuzzleElement.BLANK);
+						puzzle.setElement(p.x, p.y, PuzzleElement.BLANK);
 						return false;
 					}
 				}
 			}
-			puzzle.setElement(p.x, p.y, AbstractLPuzzle.PuzzleElement.BLANK);
+			puzzle.setElement(p.x, p.y, PuzzleElement.BLANK);
 		}
 		return false;
 	}
@@ -70,7 +70,7 @@ public abstract class RandomPuzzleBuilder implements Runnable {
 		System.out.println("Generating random puzzles");
 		while (puzzleCount.get() < getNumPuzzlesToSolve()) {
 			AbstractLPuzzle random = generateEmptyPuzzle();
-			List<AbstractLPuzzle.Tetromino> pieces = generatePieces();
+			List<Tetromino> pieces = generatePieces();
 
 			if (puzzleBuilder(random, pieces)) {
 				puzzlesTried.incrementAndGet();
@@ -91,6 +91,6 @@ public abstract class RandomPuzzleBuilder implements Runnable {
 
 	public abstract AbstractLPuzzle generateEmptyPuzzle();
 
-	public abstract List<AbstractLPuzzle.Tetromino> generatePieces();
+	public abstract List<Tetromino> generatePieces();
 
 }
