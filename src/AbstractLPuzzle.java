@@ -32,21 +32,25 @@ public abstract class AbstractLPuzzle {
 		}
 	}
 
-	public enum Tetromino {
-		LONG_TIP("*", new int[] { 0, 0, -1 }, new int[] { -1, -2, -2 }), SHORT_TIP("&", new int[] { 0, 1, 2 },
-				new int[] { -1, -1, -1 }), CORNER("^", new int[] { 0, 0, 1 },
-						new int[] { -1, -2, 0 }), MID_PIECE("%", new int[] { 0, 0, 1 }, new int[] { -1, 1, 1 });
-
-		private Tetromino(String symbol, int[] xOffsets, int[] yOffsets) {
-			this.symbol = symbol;
-			this.xOffsets = xOffsets;
-			this.yOffsets = yOffsets;
-		}
-
-		String symbol;
-		int[] xOffsets;
-		int[] yOffsets;
-	}
+    public enum Tetromino {
+    	// Colors from http://www.somersault1824.com/tips-for-designing-scientific-figures-for-color-blind-readers/
+        LONG_TIP("*",new int[]{0, 0, -1}, new int[]{-1, -2, -2}, new Color(73, 0, 146)),
+        SHORT_TIP("&",new int[]{0, 1, 2}, new int[]{-1, -1, -1}, new Color(146, 0, 0)),
+        CORNER("^",new int[]{0, 0, 1}, new int[]{-1, -2, 0},     new Color(182, 219, 255)),
+        MID_PIECE("%",new int[]{0, 0, 1}, new int[]{-1, 1, 1},   new Color(255, 255, 109));
+        
+		private Tetromino(String symbol, int[] xOffsets, int[] yOffsets, Color printColor) {
+            this.symbol = symbol;
+            this.xOffsets = xOffsets;
+            this.yOffsets = yOffsets;
+            this.printColor = printColor;
+        }
+        
+        String symbol;
+        int[] xOffsets;
+        int[] yOffsets;
+        Color printColor;
+    }
 
 	public enum Rotation {
 		None(new int[][] { { 1, 0 }, { 0, 1 } }), Ninety(new int[][] { { 0, -1 }, { 1, 0 } }), OneEighty(
@@ -105,6 +109,8 @@ public abstract class AbstractLPuzzle {
 	public abstract void setElement(int x, int y, PuzzleElement peg);
 
 	public abstract Tetromino getTetromino(int x, int y);
+	
+	public abstract List<TetriPlacement> getTetrinomos();
 
 	/**
 	 * Tries to add the tetrinomo at the given location, with the given rotation
@@ -343,6 +349,27 @@ public abstract class AbstractLPuzzle {
 
 	public void print(Graphics2D g, int xOffset, int yOffset, int puzzleNumber, PrintingOptions options) {
 		final int gridSize = 36; // half an inch
+		
+		List<TetriPlacement> tetrinomos = getTetrinomos();
+		int toShow = 0;
+		if (options == PrintingOptions.WITH_HINT) {
+			toShow = 3;
+		} else if (options == PrintingOptions.WITH_SOLUTION) {
+			toShow = tetrinomos.size();
+		}
+		for (TetriPlacement t :tetrinomos.subList(0, toShow)) {
+			List<Point> points = getRotatedTetrominoOffsets(t.rotation, t.tetromino);
+			g.setColor(t.tetromino.printColor);
+			for (Point offset : points) {
+				g.fillRect(xOffset + (t.peg.x + offset.x) * gridSize, 
+						   yOffset + (t.peg.y + offset.y) * gridSize, 
+						   gridSize, gridSize);
+			}
+			g.fillRect(xOffset + (t.peg.x * gridSize), 
+					   yOffset + (t.peg.y * gridSize), 
+					   gridSize, gridSize);
+		}
+		
 		// draws a grid
 		g.setColor(Color.black);
 		g.setStroke(new BasicStroke(2.0f));
@@ -368,11 +395,14 @@ public abstract class AbstractLPuzzle {
 		}
 		
 		// Draw puzzle number and difficulty
+		g.setColor(Color.black);
 		g.setFont(g.getFont().deriveFont(18f));
 		g.drawString(String.format("Puzzle %d - Difficulty %1.2f", puzzleNumber, Math.log(getDifficulty())), 
 				xOffset + 1*gridSize, yOffset + gridSize * (getHeight() + 1));
 
 	}
+
+
 }
 
 enum SolvingVerbosity {

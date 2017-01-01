@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
@@ -178,7 +179,7 @@ public class LPuzzlePrinter {
 				pageIndex %= (pagesOfContent + 2);
 				int arrayOffset = pageIndex * 8;
 				
-				for (int i = 0; i + arrayOffset < puzzles.length && i < 4; i++) {
+				for (int i = 0; (2 * i) + arrayOffset < puzzles.length && i < 4; i++) {
 					int puzzleNumber = arrayOffset + (i * 2);
 					AbstractLPuzzle p = puzzles[puzzleNumber];
 					p.print(g2d, i % 2 * PUZZLE_WIDTH_PTS, 
@@ -194,6 +195,8 @@ public class LPuzzlePrinter {
 		}
 
 		private void printFullPage(String msg, Graphics2D g2d) {
+			g2d.setColor(Color.black);
+			g2d.setFont(g2d.getFont().deriveFont(24f));
 			g2d.drawString(msg, 100, 100);
 		}
 

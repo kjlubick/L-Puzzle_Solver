@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A 2-darray-based implementation of the LPuzzle
+ * A 2-d array-based implementation of the LPuzzle
  * 
  * @author KevinLubick
  *
@@ -15,6 +15,8 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 	private PuzzleElement[][] puzzle = new PuzzleElement[getHeight()][getWidth()];
 
 	private Tetromino[][] tetrominos = new Tetromino[getHeight()][getWidth()];
+	
+	private List<TetriPlacement> placedTetrominos = new ArrayList<TetriPlacement>();
 
 	private List<Point> pegs = new ArrayList<Point>();
 
@@ -74,6 +76,11 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 		x = x % getWidth();
 		return tetrominos[y][x];
 	}
+	
+	@Override
+	public List<TetriPlacement> getTetrinomos() {
+		return placedTetrominos;
+	}
 
 	@Override
 	public boolean addTetrinomo(TetriPlacement p) {
@@ -82,6 +89,8 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 		if (puzzle[p.peg.y][p.peg.x] != PuzzleElement.PEG || !canFullyPlaceTetromino(p)) {
 			return false;
 		}
+		
+		placedTetrominos.add(p);
 
 		// set pegs
 		List<Point> offsets = getRotatedTetrominoOffsets(p.rotation, t);
@@ -152,6 +161,7 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 		if (puzzle[p.peg.y][p.peg.x] != PuzzleElement.PEG) {
 			return;
 		}
+		placedTetrominos.remove(p);
 		// blanket reset. It is only guaranteed to work if a tetrinomo was
 		// previously placed here.
 		tetrominos[p.peg.y][p.peg.x] = null;
@@ -180,6 +190,7 @@ public abstract class AbstractArrayLPuzzle extends AbstractLPuzzle {
 				tetrominos[x][y] = null;
 			}
 		}
+		placedTetrominos.clear();
 	}
 
 	@Override
