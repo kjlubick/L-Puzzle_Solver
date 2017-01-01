@@ -31,12 +31,6 @@ public class EightByEightLPuzzle extends AbstractArrayLPuzzle {
 	}
 
 	@Override
-	public double getDifficulty() {
-		// inflate difficulty because there are more things to check
-		return super.getDifficulty() + 5;
-	}
-
-	@Override
 	protected Map<Tetromino, Integer> getInitialPieces() {
 		Map<Tetromino, Integer> piecesToUse = new HashMap<Tetromino, Integer>(4);
 		for (Tetromino tetromino : Tetromino.values()) {
