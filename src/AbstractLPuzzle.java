@@ -15,7 +15,7 @@ public abstract class AbstractLPuzzle {
 	public enum PuzzleElement {
 		BLANK(' '), PEG('o');
 
-		public char toChar;
+		final char toChar;
 
 		private PuzzleElement(char c) {
 			this.toChar = c;
@@ -47,10 +47,10 @@ public abstract class AbstractLPuzzle {
             this.printColor = printColor;
         }
         
-        String symbol;
-        int[] xOffsets;
-        int[] yOffsets;
-        Color printColor;
+        final String symbol;
+        final int[] xOffsets;
+        final int[] yOffsets;
+        final Color printColor;
     }
 
     public enum Rotation {
@@ -67,7 +67,7 @@ public abstract class AbstractLPuzzle {
             this.rotMatrix = rotMatrix;
         }
         
-        int[][] rotMatrix;
+        final int[][] rotMatrix;
     }
 
 	private double difficulty = 1;

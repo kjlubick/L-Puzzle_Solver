@@ -53,9 +53,9 @@ public class LPuzzlePrinter {
 		boolean printSolutions = false;
 		
 		if (args.length > 0) {
-			if (args[0].equals("--hints")) {
+			if ("--hints".equals(args[0])) {
 				printHints = true;
-			}else if (args[0].equals("--solutions")) {
+			}else if ("--solutions".equals(args[0])) {
 				printSolutions = true;
 			} else if (args[0].startsWith("-")) {
 				System.out.println("Unrecognized flag "+args[0]);
@@ -65,9 +65,9 @@ public class LPuzzlePrinter {
 		}
 		
 		if (args.length > 1) {
-			if (args[1].equals("--hints")) {
+			if ("--hints".equals(args[1])) {
 				printHints = true;
-			}else if (args[1].equals("--solutions")) {
+			}else if ("--solutions".equals(args[1])) {
 				printSolutions = true;
 			} else if (args[1].startsWith("-")) {
 				System.out.println("Unrecognized flag "+args[1]);
@@ -103,10 +103,7 @@ public class LPuzzlePrinter {
 
 			@Override
 			public int compare(AbstractLPuzzle o1, AbstractLPuzzle o2) {
-				if (o1.getDifficulty() > o2.getDifficulty()) {
-					return 1;
-				}
-				return -1;
+				return Double.compare(o1.getDifficulty(), o2.getDifficulty());
 			}
 		});
 		print4Puzzles(puzzles, printHints, printSolutions);
