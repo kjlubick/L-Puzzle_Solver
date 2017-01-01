@@ -69,7 +69,7 @@ public abstract class AbstractLPuzzle {
 
 	private Stack<TetriPlacement> solution;
 
-	public void print() {
+	public void printToStdOut() {
 		System.out.println();
 		for (int y = 0; y < getHeight(); y++) {
 			for (int x = 0; x < getWidth(); x++) {
@@ -158,7 +158,7 @@ public abstract class AbstractLPuzzle {
 		if (solve(new ArrayList<Point>(getPegLocations()), piecesToUse)) {
 			if (solveVerbosity != SolvingVerbosity.SILENT) {
 				System.out.println("Solved");
-				this.print();
+				this.printToStdOut();
 			}
 			if (solveVerbosity == SolvingVerbosity.SHOW_WORK) {
 				int i = 1;
@@ -341,7 +341,7 @@ public abstract class AbstractLPuzzle {
 		}
 	}
 
-	public void print(Graphics2D g, int xOffset, int yOffset) {
+	public void print(Graphics2D g, int xOffset, int yOffset, int puzzleNumber, PrintingOptions options) {
 		final int gridSize = 36; // half an inch
 		// draws a grid
 		g.setColor(Color.black);
@@ -367,13 +367,18 @@ public abstract class AbstractLPuzzle {
 			}
 		}
 		
+		// Draw puzzle number and difficulty
 		g.setFont(g.getFont().deriveFont(18f));
-		g.drawString(String.format("Difficulty %1.2f", Math.log(getDifficulty())), 
-				xOffset + 2*gridSize, yOffset + gridSize * (getHeight() + 1));
+		g.drawString(String.format("Puzzle %d - Difficulty %1.2f", puzzleNumber, Math.log(getDifficulty())), 
+				xOffset + 1*gridSize, yOffset + gridSize * (getHeight() + 1));
 
 	}
 }
 
 enum SolvingVerbosity {
 	SILENT, SHOW_FINAL, SHOW_WORK
+}
+
+enum PrintingOptions {
+	JUST_PUZZLE, WITH_HINT, WITH_SOLUTION
 }
