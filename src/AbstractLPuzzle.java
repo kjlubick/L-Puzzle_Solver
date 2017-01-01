@@ -63,10 +63,6 @@ public abstract class AbstractLPuzzle {
 		int[][] rotMatrix;
 	}
 
-	protected enum SolvingVerbosity {
-		SILENT, SHOW_FINAL, SHOW_WORK
-	}
-
 	private double difficulty = 1;
 
 	private SolvingVerbosity solveVerbosity;
@@ -370,6 +366,14 @@ public abstract class AbstractLPuzzle {
 				}
 			}
 		}
+		
+		g.setFont(g.getFont().deriveFont(18f));
+		g.drawString(String.format("Difficulty %1.2f", Math.log(getDifficulty())), 
+				xOffset + 2*gridSize, yOffset + gridSize * (getHeight() + 1));
 
 	}
+}
+
+enum SolvingVerbosity {
+	SILENT, SHOW_FINAL, SHOW_WORK
 }
