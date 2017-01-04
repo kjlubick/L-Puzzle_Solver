@@ -6,9 +6,9 @@ Given a board that has twelve pegs in it like:
 ![sample_puzzle](https://cloud.githubusercontent.com/assets/6819944/5558791/24a71b9c-8cfa-11e4-8f1f-3131a5dd83f7.PNG)
 
 and 3 of each of the following pieces, each with a hole in it:
-![pieces](https://cloud.githubusercontent.com/assets/6819944/5558794/51a2ccea-8cfa-11e4-86f7-2cde891a4908.PNG) 
+![pieces](https://cloud.githubusercontent.com/assets/6819944/5558794/51a2ccea-8cfa-11e4-86f7-2cde891a4908.PNG)
 
-can you find an arrangement of the pieces so that the board is filled and 
+can you find an arrangement of the pieces so that the board is filled and
 no alike pieces touch, even at a corner.
 You can rotate and flip the pieces however you like.
 
@@ -27,14 +27,18 @@ You can even generate a random puzzle in about 30-45 seconds (there are many arr
 
 
 ###Heuristic for solving L-Puzzles###
-1. Start with an empty board (just the pegs).  
+1. Start with an empty board (just the pegs).
 2. Find a peg that has the fewest legal piece-rotation pairs, by throwing out all possibilities that go off the board or overlap another peg.  If there is a peg that has 0 legal pairs, bail out (no solution).
 3. Place one of the piece-rotation pairs on that peg.  (In later steps, check to make sure the piece is far enough from other pieces of the same type).
 4. Repeat step 2.  If step 2 fails, keep trying piece-rotation pairs on the given peg.
 5. If you've exhausted all piece-rotation pairs, there is no solution, give up and back-track.
 
-Surprisingly, this simple heuristic solves a puzzle very quickly.  
+Surprisingly, this simple heuristic solves a puzzle very quickly.
 In many puzzles, from an empty board, there are a few pegs that have five or fewer valid piece-rotation pairs, instead of the 32 (4 pieces, 8 rotations) that make the puzzle intractable.
 
 ###Other sizes###
 An 8x8 puzzle can be solved using 16 pegs and 4 of each piece.
+
+###Open Source License###
+This project is released Open Source under the Apache 2.0 License.
+See the LICENSE file in the root of the repo for more information.
