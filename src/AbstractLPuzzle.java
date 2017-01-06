@@ -152,7 +152,7 @@ public abstract class AbstractLPuzzle {
 	}
 
 	public double getDifficulty() {
-		return difficulty;
+		return Math.log10(difficulty);
 	}
 
 	private boolean solve(List<Point> pegsLeftToLocate, Map<Tetromino, Integer> numberOfAvailablePieces) {
@@ -274,7 +274,7 @@ public abstract class AbstractLPuzzle {
 		// Draw puzzle number and difficulty
 		g.setColor(Color.black);
 		g.setFont(g.getFont().deriveFont(18f));
-		g.drawString(String.format("Puzzle %d - Difficulty %1.2f", puzzleNumber, Math.log(getDifficulty())), 
+		g.drawString(String.format("Puzzle %d - Difficulty %1.2f", puzzleNumber, getDifficulty()), 
 				xOffset + 1*gridSize, yOffset + gridSize * (getHeight() + 1));
 
 	}

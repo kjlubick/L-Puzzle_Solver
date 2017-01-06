@@ -75,11 +75,13 @@ public abstract class RandomPuzzleBuilder implements Runnable {
 			if (puzzleBuilder(random, pieces)) {
 				puzzlesTried.incrementAndGet();
 				if (random.solve(SolvingVerbosity.SILENT)) {
-					puzzleCount.incrementAndGet();
-					synchronized (syncObject) {
-						System.out.printf("Difficulty %1.2f:  %s%n", Math.log(random.getDifficulty()), random.export());
-					}
-				}
+					if (random.getDifficulty() < 1.4 || random.getDifficulty() > 6.9) {
+						puzzleCount.incrementAndGet();
+						synchronized (syncObject) {
+							System.out.printf("Difficulty %1.2f:  %s%n", random.getDifficulty(), random.export());
+						}
+					} 
+				} 
 			}
 		}
 		System.out.println("Tried " + puzzlesTried.get() + " puzzles to generate " + puzzleCount.get());
