@@ -4,10 +4,10 @@ This is a small set of classes designed to help build and solve L-Puzzles, which
 
 Given a board that has twelve pegs in it like:
 
-![sample 6x8 puzzle](./images/sample_puzzle.PNG)
+<img src=".blob/master/images/sample_puzzle.PNG" alt="sample 6x8 puzzle" width="600px">
 
 and 3 of each of the following pieces, each with a hole in it:
-![pieces](./images/pieces.PNG)
+<img src=".blob/master/images/pieces.PNG" alt="The 4 different pieces" width="600px">
 
 can you find an arrangement of the pieces so that the board is filled and
 no alike pieces touch, even at a corner.
@@ -15,7 +15,7 @@ You can rotate and flip the pieces however you like.
 
 One solution is:
 
-![sample_puzzle_solved](./images/sample_puzzle_solved.PNG)
+<img src=".blob/master/images/sample_puzzle_solved.PNG" alt="the solved sample 6x8 puzzle" width="600px">
 
 The first time I saw a puzzle like this, it took about 25 minutes to solve one.
 A little bit of combinatorics thinking showed that there are about [25 quadrillion combinations](http://www.wolframalpha.com/input/?i=%2812+choose+3%29%289+choose+3%29%286+choose+3%29%288%5E12%29) of pieces, rotations and pegs for any given 6x8 puzzle and
@@ -40,7 +40,7 @@ In many puzzles, from an empty board, there are a few pegs that have five or few
 ###Other sizes###
 An 8x8 puzzle can be solved using 16 pegs and 4 of each piece.
 
-![sample 8x8 puzzle](./images/sample_8_puzzle_solved.PNG)
+<img src=".blob/master/images/sample_8_puzzle_solved.PNG" alt="sample solved 8x8 puzzle" width="600px">
 
 ###Open Source License###
 This project is released Open Source under the Apache 2.0 License.
