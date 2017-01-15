@@ -6,10 +6,6 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class LPuzzlePrinter {
@@ -37,76 +33,6 @@ public class LPuzzlePrinter {
 				ex.printStackTrace();
 			}
 		}
-	}
-
-	private static void printUsage() {
-		System.out.println("Usage java -jar printer.jar [--hints] [--solutions] \"[ o o...]\" [more puzzles...]");
-	}
-
-	public static void main(String[] args) {
-		System.out.println(Arrays.toString(args));
-		if (args == null) {
-			printUsage();
-			return;
-		}
-		boolean printHints = false;
-		boolean printSolutions = false;
-		
-		if (args.length > 0) {
-			if ("--hints".equals(args[0])) {
-				printHints = true;
-			}else if ("--solutions".equals(args[0])) {
-				printSolutions = true;
-			} else if (args[0].startsWith("-")) {
-				System.out.println("Unrecognized flag "+args[0]);
-				printUsage();
-				return;
-			}
-		}
-		
-		if (args.length > 1) {
-			if ("--hints".equals(args[1])) {
-				printHints = true;
-			}else if ("--solutions".equals(args[1])) {
-				printSolutions = true;
-			} else if (args[1].startsWith("-")) {
-				System.out.println("Unrecognized flag "+args[1]);
-				printUsage();
-				return;
-			}
-		}
-
-		List<AbstractLPuzzle> puzzles = new ArrayList<AbstractLPuzzle>();
-		for (String puzzle : args) {
-			puzzle = puzzle.trim();
-			if (puzzle.startsWith("-")) {
-				continue;
-			}
-			if (puzzle.length() == 50) {
-				puzzles.add(new SixByEightLPuzzle(puzzle));
-			} else if (puzzle.length() == 66) {
-				puzzles.add(new EightByEightLPuzzle(puzzle));
-			} else {
-				System.out.printf("Malformed puzzle: %s\n", puzzle);
-			}
-		}
-		if (puzzles.isEmpty()) {
-			printUsage();
-			return;
-		}
-		System.out.printf("Printing %d puzzles\n", puzzles.size());
-		// Print them least difficult to most difficult.
-		for (AbstractLPuzzle p : puzzles) {
-			p.solve(SolvingVerbosity.SILENT);
-		}
-		Collections.sort(puzzles, new Comparator<AbstractLPuzzle>() {
-
-			@Override
-			public int compare(AbstractLPuzzle o1, AbstractLPuzzle o2) {
-				return Double.compare(o1.getDifficulty(), o2.getDifficulty());
-			}
-		});
-		print4Puzzles(puzzles, printHints, printSolutions);
 	}
 
 	private static class FourPuzzlePrintable implements Printable {
