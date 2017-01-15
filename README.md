@@ -7,7 +7,7 @@ Given a board that has twelve pegs in it like:
 ![sample 6x8 puzzle](./images/sample_puzzle.PNG)
 
 and 3 of each of the following pieces, each with a hole in it:
-![pieces](./pieces.PNG)
+![pieces](./images/pieces.PNG)
 
 can you find an arrangement of the pieces so that the board is filled and
 no alike pieces touch, even at a corner.
