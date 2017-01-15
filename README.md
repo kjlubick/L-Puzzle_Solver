@@ -3,10 +3,11 @@
 This is a small set of classes designed to help build and solve L-Puzzles, which I first learned about from [Lateral Thinking](http://www.amazon.com/Lateral-Thinking-Puzzles-Large-Print-ebook/dp/B00CPNQZ4A/ref=sr_1_1?ie=UTF8&qid=1419618096&sr=8-1&keywords=lateral+thinking+arcturus), a puzzle book.
 
 Given a board that has twelve pegs in it like:
-![sample_puzzle](https://cloud.githubusercontent.com/assets/6819944/5558791/24a71b9c-8cfa-11e4-8f1f-3131a5dd83f7.PNG)
+
+![sample 6x8 puzzle](./images/sample_puzzle.PNG)
 
 and 3 of each of the following pieces, each with a hole in it:
-![pieces](https://cloud.githubusercontent.com/assets/6819944/5558794/51a2ccea-8cfa-11e4-86f7-2cde891a4908.PNG)
+![pieces](./pieces.PNG)
 
 can you find an arrangement of the pieces so that the board is filled and
 no alike pieces touch, even at a corner.
@@ -14,7 +15,7 @@ You can rotate and flip the pieces however you like.
 
 One solution is:
 
-![sample_puzzle_solved](https://cloud.githubusercontent.com/assets/6819944/5558801/891172c6-8cfa-11e4-8ed2-7b10375dc07e.PNG)
+![sample_puzzle_solved](./images/sample_puzzle_solved.PNG)
 
 The first time I saw a puzzle like this, it took about 25 minutes to solve one.
 A little bit of combinatorics thinking showed that there are about [25 quadrillion combinations](http://www.wolframalpha.com/input/?i=%2812+choose+3%29%289+choose+3%29%286+choose+3%29%288%5E12%29) of pieces, rotations and pegs for any given 6x8 puzzle and
@@ -38,6 +39,8 @@ In many puzzles, from an empty board, there are a few pegs that have five or few
 
 ###Other sizes###
 An 8x8 puzzle can be solved using 16 pegs and 4 of each piece.
+
+![sample 8x8 puzzle](./images/sample_8_puzzle_solved.PNG)
 
 ###Open Source License###
 This project is released Open Source under the Apache 2.0 License.

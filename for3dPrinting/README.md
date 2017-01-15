@@ -6,6 +6,10 @@ I designed a box that has a slide out lid and can support 6x8 and 8x8 puzzles.
 ![a game in progress](../images/in_progress.jpg)
 
 These STL files can be printed out to make one yourself.
+Unlike the "theoretical" game, the 3d-printed ones have an integrated peg, rather than a whole.
+This makes it fit better together.
+
+
 A typical print will involve:
 
 - 1 x [L-puzzle_board.stl](https://tinkercad.com/things/2YUs7paEJ9M)
@@ -18,7 +22,7 @@ A typical print will involve:
 This printed fine on an Ultimaker 2 at high settings (.6mm layer height, .25mm nozzle).
 Be sure to use glue for better adhesion on the box and board, if applicable.
 
-I've linked the above models to tinkercad for more fine-grain editing.
+I've linked the above models to their TinkerCAD sources for more fine-grain editing.
 
 ## How to play with the pieces
 
@@ -31,4 +35,4 @@ Remove one of the pins and place a piece, aligning the piece so the pin goes whe
 
 Repeat this for more pieces
 
-![The board with two pieces set](../images/2_piece.jpg)
+![The board with two pieces set](../images/2_pieces.jpg)
