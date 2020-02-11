@@ -1,4 +1,4 @@
-#L-Puzzle solver#
+# L-Puzzle solver #
 
 This is a small set of classes designed to help build and solve L-Puzzles, which I first learned about from [Lateral Thinking](http://www.amazon.com/Lateral-Thinking-Puzzles-Large-Print-ebook/dp/B00CPNQZ4A/ref=sr_1_1?ie=UTF8&qid=1419618096&sr=8-1&keywords=lateral+thinking+arcturus), a puzzle book.
 
@@ -27,7 +27,7 @@ Most puzzles are solved in milliseconds with a heuristic (detailed below) that c
 You can even generate a random puzzle in about 30-45 seconds (there are many arrangements that lack solutions).
 
 
-###Heuristic for solving L-Puzzles###
+## Heuristic for solving L-Puzzles ##
 1. Start with an empty board (just the pegs).
 2. Find a peg that has the fewest legal piece-rotation pairs, by throwing out all possibilities that go off the board or overlap another peg.  If there is a peg that has 0 legal pairs, bail out (no solution).
 3. Place one of the piece-rotation pairs on that peg.  (In later steps, check to make sure the piece is far enough from other pieces of the same type).
@@ -37,11 +37,11 @@ You can even generate a random puzzle in about 30-45 seconds (there are many arr
 Surprisingly, this simple heuristic solves a puzzle very quickly.
 In many puzzles, from an empty board, there are a few pegs that have five or fewer valid piece-rotation pairs, instead of the 32 (4 pieces, 8 rotations) that make the puzzle intractable.
 
-###Other sizes###
+## Other sizes ##
 An 8x8 puzzle can be solved using 16 pegs and 4 of each piece.
 
 <img src="images/sample_8_puzzle_solved.PNG" alt="sample solved 8x8 puzzle" width="600px">
 
-###Open Source License###
+## Open Source License ##
 This project is released Open Source under the Apache 2.0 License.
 See the LICENSE file in the root of the repo for more information.
